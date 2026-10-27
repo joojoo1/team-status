@@ -141,7 +141,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     <button class="nav" role="tab" aria-selected="true" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12H3l9-9 9 9h-2"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M10 12h4v4h-4z"/></svg>홈</button>
     <button class="nav" role="tab" aria-selected="false" data-go="proj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="6" rx="2"/><rect x="4" y="14" width="16" height="6" rx="2"/></svg>사업 현황</button>
     <button class="nav" role="tab" aria-selected="false" data-go="sales"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="9"/><path d="M15 9l6-6"/></svg>영업 현황</button>
-    <button class="nav" role="tab" aria-selected="false" data-go="splan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>사업계획서</button>
+    <button class="nav" role="tab" aria-selected="false" data-go="splan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>영업 전략</button>
     <button class="nav" role="tab" aria-selected="false" data-go="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>신규사업 기획</button>
     <button class="nav" role="tab" aria-selected="false" data-go="bids"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>신규사업 공고</button>
     <div class="foot"><b>갱신</b><br><span id="updated">-</span></div>
@@ -182,7 +182,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
         <button class="chip" role="tab" aria-selected="true" data-tab="over">한눈에 보기</button>
         <button class="chip" role="tab" aria-selected="false" data-tab="list">대학별 다음 할 일</button>
         <button class="chip" role="tab" aria-selected="false" data-tab="report">주간보고</button>
-        <button class="chip" data-jump="splan">사업계획서 보기</button>
+        <button class="chip" data-jump="splan">영업 전략 보기</button>
       </div>
       <div data-panel="over" style="display:flex;flex-direction:column;gap:16px">
         <div class="stats" id="kpis"></div>
@@ -200,7 +200,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     </section>
 
     <section class="page" data-page="splan" hidden>
-      <div><p class="eyebrow">사업계획서</p><h1 id="sp-title">27년 대학 영업 계획</h1><p class="sub" id="sp-meta"></p></div>
+      <div><p class="eyebrow">영업 전략</p><h1 id="sp-title">27년 대학 영업 계획</h1><p class="sub" id="sp-meta"></p></div>
       <div class="sp-bar" id="sp-bar"></div>
       <div id="sp-tok"></div>
       <div id="sp-root" style="display:flex;flex-direction:column;gap:16px"><p class="mini">불러오는 중...</p></div>
@@ -265,7 +265,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2610271725').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2610271728').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -336,7 +336,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
   async function spLoad() {
     const root = document.getElementById('sp-root');
     try { const r = await fetch(GH.path + '?t=' + Date.now(), { cache: 'no-store' }); SP.d = await unlock(PW, await r.json()); spRender(); }
-    catch { root.textContent = ''; root.appendChild(el('p', 'mini', '사업계획서를 불러오지 못했습니다.')); }
+    catch { root.textContent = ''; root.appendChild(el('p', 'mini', '영업 전략을 불러오지 못했습니다.')); }
   }
   async function spSave() {
     const token = ls.get('tsGhToken'); if (!token) { SP.msg = '먼저 아래 칸에 GitHub 토큰을 넣어 주세요.'; spBar(); return; }
