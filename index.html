@@ -269,7 +269,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2610271720').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2610271723').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
