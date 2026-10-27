@@ -140,7 +140,6 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     <p class="navg">현황</p>
     <button class="nav" role="tab" aria-selected="true" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12H3l9-9 9 9h-2"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M10 12h4v4h-4z"/></svg>홈</button>
     <button class="nav" role="tab" aria-selected="false" data-go="proj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="6" rx="2"/><rect x="4" y="14" width="16" height="6" rx="2"/></svg>사업 현황</button>
-    <button class="nav" role="tab" aria-selected="false" data-go="sheet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/><path d="M10 4v16"/></svg>운영 현황 시트</button>
     <button class="nav" role="tab" aria-selected="false" data-go="sales"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="9"/><path d="M15 9l6-6"/></svg>영업 현황</button>
     <button class="nav" role="tab" aria-selected="false" data-go="splan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>사업계획서</button>
     <button class="nav" role="tab" aria-selected="false" data-go="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>신규사업 기획</button>
@@ -165,7 +164,8 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     </section>
 
     <section class="page" data-page="proj" hidden>
-      <div><p class="eyebrow">사업 현황</p><h1>진행 중인 사업, 다음에 할 일</h1><p class="sub">완료·보류를 뺀 사업의 단계와 다음 할 일입니다.</p></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap"><div><p class="eyebrow">사업 현황</p><h1>진행 중인 사업, 다음에 할 일</h1><p class="sub">완료·보류를 뺀 사업의 단계와 다음 할 일입니다.</p></div><div id="proj-link"></div></div>
+      <div class="strat"><p class="t">지금 진행 중인 사업</p><ul id="ps-sum" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.6;color:var(--g900)"></ul></div>
       <div class="stats">
         <div class="stat"><span class="k">진행 중인 사업</span><span class="v"><span id="ps-n">-</span><small>개</small></span></div>
         <div class="stat"><span class="k">2주 안 다음 할 일</span><span class="v"><span id="ps-soon">-</span><small>건</small></span></div>
@@ -173,10 +173,6 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
         <div class="stat"><span class="k">리스크 높음</span><span class="v"><span id="ps-high">-</span><small>개</small></span></div>
       </div>
       <div id="proj-groups" style="display:flex;flex-direction:column;gap:16px"></div>
-    </section>
-    <section class="page" data-page="sheet" hidden>
-      <div><p class="eyebrow">운영 현황 시트</p><h1>사업 운영 현황 시트</h1><p class="sub">사업별 운영 현황 원본 시트로 바로 들어갑니다.</p></div>
-      <div class="card"><h3>사업 운영 현황 시트</h3><p class="desc">링크를 누르면 새 창에서 열립니다. 시트 권한이 있는 계정으로 로그인해야 볼 수 있습니다.</p><div id="proj-link"></div></div>
     </section>
 
     <section class="page" data-page="sales" hidden>
@@ -269,7 +265,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2610271723').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2610271725').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -421,6 +417,13 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     set('ps-soon', projects.filter(p => { const d = days(p.due); return d !== null && d >= 0 && d <= 14; }).length);
     set('ps-over', projects.filter(p => { const d = days(p.due); return d !== null && d < 0; }).length);
     set('ps-high', projects.filter(p => p.risk === '높음').length);
+    // 맨 위 요약: 큰 사업별 한 줄
+    const short = n => String(n || '').replace(/^조선이공대\s*/, '').replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+    const sumUl = document.getElementById('ps-sum');
+    [...new Set(projects.map(r => r.group || '기타'))].forEach(g => {
+      const L = projects.filter(r => (r.group || '기타') === g), st = [...new Set(L.map(r => r.stage))];
+      sumUl.appendChild(el('li', '', `${g} ${L.length}건 · ` + st.map(s => { const N = L.filter(r => r.stage === s); return `${s} ${N.length}(${N.map(r => short(r.name)).join('·')})`; }).join(', ')));
+    });
     // 큰 사업별 카드
     const pgs = document.getElementById('proj-groups'); const bodies = {};
     [...new Set(projects.map(r => r.group || '기타'))].forEach(g => {
@@ -437,8 +440,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     if (!projects.length) pgs.appendChild(el('p', 'fail', '자료가 없습니다'));
     // 운영 현황 시트 링크 (주소는 잠긴 meta에 들어 있음)
     const pl = document.getElementById('proj-link'), mt = Array.isArray(meta) ? meta[0] : meta;
-    if (mt && /^https:\/\/docs\.google\.com\//.test(mt.proj_link || '')) { const a = el('a', 'btn'); a.href = mt.proj_link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '사업 운영 현황 시트 열기'; pl.appendChild(a); }
-    else pl.appendChild(el('p', 'mini', '연결된 시트가 없습니다.'));
+    if (mt && /^https:\/\/docs\.google\.com\//.test(mt.proj_link || '')) { const a = el('a', 'btn'); a.href = mt.proj_link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '운영 현황 보러가기 ↗'; pl.appendChild(a); }
 
     // 영업 현황
     const g = Array.isArray(strategy) ? strategy[0] : strategy;
