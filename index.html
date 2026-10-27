@@ -128,6 +128,14 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 .sp-in { width:100%; font:inherit; color:var(--g900); border:1px solid var(--blue); border-radius:8px; padding:6px 8px; background:#fff; resize:vertical; line-height:1.5; }
 .sp-tok { display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:var(--g50,#F9FAFB); border-radius:12px; padding:10px 12px; font-size:13px; }
 .sp-tok input { flex:1; min-width:220px; height:36px; border:1px solid var(--g300); border-radius:8px; padding:0 10px; font:inherit; }
+.sp-gov { background:#fff; border-radius:20px; border:1px solid var(--g200); border-left:5px solid #2f7d5b; padding:18px 20px; }
+.sp-gov h3 { font-size:17px; color:#2f7d5b; margin-bottom:2px; } .sp-gov .note { font-size:12px; color:var(--g600); margin-bottom:12px; }
+.sp-gov-g { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.sp-gi { background:#F3FAF6; border-radius:14px; padding:14px; font-size:13px; line-height:1.55; display:flex; flex-direction:column; gap:4px; }
+.sp-gi .nm { font-size:15px; font-weight:700; color:#2f7d5b; } .sp-gi .bd { font-size:18px; font-weight:700; color:var(--g900); } .sp-gi .sc { color:var(--g600); }
+.sp-gi .of { margin-top:4px; padding-top:6px; border-top:1px solid #d6ebe0; color:var(--g800); } .sp-gi .of b { color:#2f7d5b; }
+@media (max-width: 1100px) { .sp-gov-g { grid-template-columns:1fr 1fr; } }
+@media (max-width: 600px) { .sp-gov-g { grid-template-columns:1fr; } }
 @media (max-width: 900px) { .sp-goals, .sp-tracks, .sp-low { grid-template-columns:1fr; } .sp-sum li { font-size:15px; } }
 @media print { .side, .sp-bar, .sp-tok, #lock { display:none !important; } main { padding:0 !important; } .page:not([data-page="splan"]) { display:none !important; } .sp-tr, .sp-goal, .sp-flow > div { break-inside:avoid; } body { background:#fff; } }
 </style>
@@ -265,7 +273,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2610271734').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2610271749').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -321,6 +329,15 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       (t.rows || []).forEach((_, j) => { const r = el('div', 'sp-row'); r.appendChild(F(`tracks.${i}.rows.${j}.k`, 'div', 'k')); r.appendChild(F(`tracks.${i}.rows.${j}.v`, 'div')); c.appendChild(r); });
       const k = el('div', 'sp-kpi'); (t.kpi || []).forEach((_, j) => { const b = el('div'); const n = F(`tracks.${i}.kpi.${j}.n`, 'b'); b.appendChild(n); b.appendChild(F(`tracks.${i}.kpi.${j}.label`, 'span')); k.appendChild(b); }); c.appendChild(k);
       ts.appendChild(c); }); root.appendChild(ts);
+    // TRACK 2 · 2027 정부 사업
+    if (d.gov && (d.gov.items || []).length) {
+      const gv = el('div', 'sp-gov'); const gh = el('h3'); gh.appendChild(F('gov.title', 'span')); gv.appendChild(gh); gv.appendChild(F('gov.note', 'p', 'note'));
+      const gg = el('div', 'sp-gov-g');
+      d.gov.items.forEach((_, i) => { const b = el('div', 'sp-gi'); const q = k => `gov.items.${i}.${k}`;
+        b.appendChild(F(q('name'), 'div', 'nm')); b.appendChild(F(q('budget'), 'div', 'bd')); b.appendChild(F(q('scale'), 'div', 'sc')); b.appendChild(F(q('what'), 'div'));
+        const of = el('div', 'of'); of.appendChild(el('b', '', '우리 제안 ')); of.appendChild(F(q('offer'), 'span')); b.appendChild(of); gg.appendChild(b); });
+      gv.appendChild(gg); root.appendChild(gv);
+    }
     // 일정 + 지도
     const low = el('div', 'sp-low'); const sc = el('div', 'card'); sc.appendChild(el('h3', '', '일정')); const fl = el('div', 'sp-flow');
     (d.schedule || []).forEach((_, i) => { const b = el('div'); b.appendChild(F(`schedule.${i}.when`, 'b')); b.appendChild(F(`schedule.${i}.t1`, 'div', 'sp-c1')); b.appendChild(F(`schedule.${i}.t2`, 'div', 'sp-c2')); fl.appendChild(b); });
@@ -360,7 +377,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 
   const render = () => Promise.all(['meta', 'projects', 'sales', 'sales_kpi', 'weeks', 'strategy', 'bids', 'plans', 'plan_refs'].map(load)).then(([meta, projects, sales, kpi, weeks, strategy, bids, plans, refs]) => {
     // 홈
-    set('h-proj', projects.length); set('h-plans', plans.length);
+    set('h-proj', projects.filter(p => !p.parent).length); set('h-plans', plans.length);
     const ck = kpi.find(r => r.metric === '접촉 대학'); if (ck) { set('h-contact', ck.value); set('h-contact-t', '/' + ck.target); }
     set('h-bids', bids.filter(b => { const d = days(b.deadline); return d !== null && d >= 0 && d <= 7; }).length);
     const hs = Array.isArray(strategy) ? strategy[0] : strategy; if (hs) set('h-lead', hs.strategy);
@@ -412,26 +429,34 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 
     const m = Array.isArray(meta) ? meta[0] : meta; if (m && m.at) set('updated', String(m.at).replace('T', ' ').slice(0, 16));
 
-    // 사업 현황
-    set('ps-n', projects.length);
+    // 사업 현황 (세부 사업은 parent로 상위 사업에 묶어 건수에서 뺀다)
+    const top = projects.filter(r => !r.parent), kids = id => projects.filter(r => r.parent === id);
+    const amt = r => Number(r.amount) > 0 ? eok(r.amount) : '-';
+    set('ps-n', top.length);
     set('ps-soon', projects.filter(p => { const d = days(p.due); return d !== null && d >= 0 && d <= 14; }).length);
     set('ps-over', projects.filter(p => { const d = days(p.due); return d !== null && d < 0; }).length);
     set('ps-high', projects.filter(p => p.risk === '높음').length);
     // 맨 위 요약: 큰 사업별 한 줄
     const short = n => String(n || '').replace(/^조선이공대\s*/, '').replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
     const sumUl = document.getElementById('ps-sum');
-    [...new Set(projects.map(r => r.group || '기타'))].forEach(g => {
-      const L = projects.filter(r => (r.group || '기타') === g), st = [...new Set(L.map(r => r.stage))];
-      sumUl.appendChild(el('li', '', `${g} ${L.length}건 · ` + st.map(s => { const N = L.filter(r => r.stage === s); return `${s} ${N.length}(${N.map(r => short(r.name)).join('·')})`; }).join(', ')));
+    [...new Set(top.map(r => r.group || '기타'))].forEach(g => {
+      const L = top.filter(r => (r.group || '기타') === g), st = [...new Set(L.map(r => r.stage))];
+      const nm = r => short(r.name) + (kids(r.id).length ? ` [세부 ${kids(r.id).length}개 포함]` : '');
+      sumUl.appendChild(el('li', '', `${g} ${L.length}건 · ` + st.map(s => { const N = L.filter(r => r.stage === s); return `${s} ${N.length}(${N.map(nm).join('·')})`; }).join(', ')));
     });
     // 큰 사업별 카드
     const pgs = document.getElementById('proj-groups'); const bodies = {};
     [...new Set(projects.map(r => r.group || '기타'))].forEach(g => {
-      const card = el('div', 'card'); const hd = el('div'); hd.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px'; hd.appendChild(el('h3', '', g)); hd.appendChild(el('span', 'rk rk-b', projects.filter(r => (r.group || '기타') === g).length + '개')); card.appendChild(hd);
-      const box = el('div', 'tbox'); const tb = el('table'); tb.innerHTML = '<thead><tr><th>사업</th><th>단계</th><th class="hide-narrow">진행률</th><th>다음 할 일</th><th>기한</th><th class="hide-narrow">리스크</th></tr></thead>'; const body = el('tbody'); tb.appendChild(body); box.appendChild(tb); card.appendChild(box); pgs.appendChild(card); bodies[g] = body;
+      const card = el('div', 'card'); const hd = el('div'); hd.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px'; hd.appendChild(el('h3', '', g)); hd.appendChild(el('span', 'rk rk-b', top.filter(r => (r.group || '기타') === g).length + '개')); card.appendChild(hd);
+      const box = el('div', 'tbox'); const tb = el('table'); tb.innerHTML = '<thead><tr><th>사업</th><th>금액</th><th>단계</th><th class="hide-narrow">진행률</th><th>다음 할 일</th><th>기한</th><th class="hide-narrow">리스크</th></tr></thead>'; const body = el('tbody'); tb.appendChild(body); box.appendChild(tb); card.appendChild(box); pgs.appendChild(card); bodies[g] = body;
     });
-    projects.forEach(r => { const pb = bodies[r.group || '기타'];
-      const tr = el('tr'); cell(tr, '').appendChild(el('b', '', r.name)); cell(tr, '').appendChild(el('span', 'rk rk-b', r.stage));
+    const ordered = []; top.forEach(r => { ordered.push(r); kids(r.id).forEach(k => ordered.push(k)); });
+    projects.filter(r => r.parent && !top.some(t => t.id === r.parent)).forEach(r => ordered.push(r));   // 상위 사업이 빠진 세부 사업도 표시
+    ordered.forEach(r => { const pb = bodies[r.group || '기타'] || bodies[(top.find(t => t.id === r.parent) || {}).group || '기타'];
+      const tr = el('tr'); const nc = cell(tr, '');
+      if (r.parent) { nc.style.paddingLeft = '28px'; const s = el('span', '', '└ ' + r.name); s.style.color = 'var(--g700)'; nc.appendChild(s); } else nc.appendChild(el('b', '', r.name));
+      const ac = cell(tr, ''); ac.style.whiteSpace = 'nowrap'; ac.appendChild(el(r.parent ? 'span' : 'b', '', amt(r))); if (r.amountBasis) ac.appendChild(el('div', 'mini', r.amountBasis));
+      cell(tr, '').appendChild(el('span', 'rk rk-b', r.stage));
       const pg = el('td', 'hide-narrow'); pg.style.minWidth = '6rem'; pg.appendChild(el('span', 'mini', (Number(r.progress) || 0) + '%')); const bar = el('div', 'bar'); const f = el('i'); f.style.width = Math.min(100, Number(r.progress) || 0) + '%'; bar.appendChild(f); pg.appendChild(bar); tr.appendChild(pg);
       cell(tr, r.next || '-'); dueCell(tr, r.due);
       const rk = cell(tr, '', 'hide-narrow'); if (r.risk) rk.appendChild(el('span', 'rk ' + (r.risk === '높음' ? 'rk-h' : r.risk === '보통' ? 'rk-m' : 'rk-l'), r.risk));
