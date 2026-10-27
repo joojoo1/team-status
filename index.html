@@ -164,14 +164,8 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     </section>
 
     <section class="page" data-page="proj" hidden>
-      <div><p class="eyebrow">사업 현황</p><h1>진행 중인 사업, 다음에 할 일</h1><p class="sub">완료·보류를 뺀 사업의 단계와 다음 할 일입니다.</p></div>
-      <div class="stats">
-        <div class="stat"><span class="k">진행 중인 사업</span><span class="v"><span id="ps-n">-</span><small>개</small></span></div>
-        <div class="stat"><span class="k">2주 안 다음 할 일</span><span class="v"><span id="ps-soon">-</span><small>건</small></span></div>
-        <div class="stat"><span class="k">기한 지난 다음 할 일</span><span class="v"><span id="ps-over">-</span><small>건</small></span></div>
-        <div class="stat"><span class="k">리스크 높음</span><span class="v"><span id="ps-high">-</span><small>개</small></span></div>
-      </div>
-      <div id="proj-groups" style="display:flex;flex-direction:column;gap:16px"></div>
+      <div><p class="eyebrow">사업 현황</p><h1>사업 운영 현황</h1><p class="sub">사업별 운영 현황은 아래 시트에서 확인합니다.</p></div>
+      <div class="card"><h3>사업 운영 현황 시트</h3><p class="desc">링크를 누르면 새 창에서 열립니다. 시트 권한이 있는 계정으로 로그인해야 볼 수 있습니다.</p><div id="proj-link"></div></div>
     </section>
 
     <section class="page" data-page="sales" hidden>
@@ -264,7 +258,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2610271642').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2610271714').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -411,25 +405,10 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 
     const m = Array.isArray(meta) ? meta[0] : meta; if (m && m.at) set('updated', String(m.at).replace('T', ' ').slice(0, 16));
 
-    // 사업 현황
-    set('ps-n', projects.length);
-    set('ps-soon', projects.filter(p => { const d = days(p.due); return d !== null && d >= 0 && d <= 14; }).length);
-    set('ps-over', projects.filter(p => { const d = days(p.due); return d !== null && d < 0; }).length);
-    set('ps-high', projects.filter(p => p.risk === '높음').length);
-    // 큰 사업별 카드
-    const pgs = document.getElementById('proj-groups'); const bodies = {};
-    [...new Set(projects.map(r => r.group || '기타'))].forEach(g => {
-      const card = el('div', 'card'); const hd = el('div'); hd.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px'; hd.appendChild(el('h3', '', g)); hd.appendChild(el('span', 'rk rk-b', projects.filter(r => (r.group || '기타') === g).length + '개')); card.appendChild(hd);
-      const box = el('div', 'tbox'); const tb = el('table'); tb.innerHTML = '<thead><tr><th>사업</th><th>단계</th><th class="hide-narrow">진행률</th><th>다음 할 일</th><th>기한</th><th class="hide-narrow">리스크</th></tr></thead>'; const body = el('tbody'); tb.appendChild(body); box.appendChild(tb); card.appendChild(box); pgs.appendChild(card); bodies[g] = body;
-    });
-    projects.forEach(r => { const pb = bodies[r.group || '기타'];
-      const tr = el('tr'); cell(tr, '').appendChild(el('b', '', r.name)); cell(tr, '').appendChild(el('span', 'rk rk-b', r.stage));
-      const pg = el('td', 'hide-narrow'); pg.style.minWidth = '6rem'; pg.appendChild(el('span', 'mini', (Number(r.progress) || 0) + '%')); const bar = el('div', 'bar'); const f = el('i'); f.style.width = Math.min(100, Number(r.progress) || 0) + '%'; bar.appendChild(f); pg.appendChild(bar); tr.appendChild(pg);
-      cell(tr, r.next || '-'); dueCell(tr, r.due);
-      const rk = cell(tr, '', 'hide-narrow'); if (r.risk) rk.appendChild(el('span', 'rk ' + (r.risk === '높음' ? 'rk-h' : r.risk === '보통' ? 'rk-m' : 'rk-l'), r.risk));
-      pb.appendChild(tr);
-    });
-    if (!projects.length) pgs.appendChild(el('p', 'fail', '자료가 없습니다'));
+    // 사업 현황: 운영 현황 시트 링크 (주소는 잠긴 meta에 들어 있음)
+    const pl = document.getElementById('proj-link'), mt = Array.isArray(meta) ? meta[0] : meta;
+    if (mt && /^https:\/\/docs\.google\.com\//.test(mt.proj_link || '')) { const a = el('a', 'btn'); a.href = mt.proj_link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '사업 운영 현황 시트 열기'; pl.appendChild(a); }
+    else pl.appendChild(el('p', 'mini', '연결된 시트가 없습니다.'));
 
     // 영업 현황
     const g = Array.isArray(strategy) ? strategy[0] : strategy;
