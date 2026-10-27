@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>공공사업팀 업무 현황</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root { --blue:#3182F6; --blue-d:#1B64DA; --blue-50:#E8F3FF; --g900:#191F28; --g800:#333D4B; --g700:#4E5968; --g600:#6B7684; --g500:#8B95A1; --g400:#B0B8C1; --g300:#D1D6DB; --g200:#E5E8EB; --g100:#F2F4F6; --g50:#F9FAFB; --red:#F04452; --red-50:#FFEEEE; --green:#03B26C; --green-50:#E5F8F0; --orange:#FE9800; --orange-50:#FFF3E0; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body { font-family:'Pretendard','맑은 고딕','Malgun Gothic',sans-serif; color:var(--g900); background:var(--g100); font-size:15px; line-height:1.5; letter-spacing:-0.01em; -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums; }
+button { font:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+.app { display:grid; grid-template-columns:224px minmax(0,1fr); min-height:100vh; }
+.side { background:#fff; border-right:1px solid var(--g200); padding:26px 14px; display:flex; flex-direction:column; gap:4px; position:sticky; top:0; height:100vh; }
+.brand { padding:0 10px 22px; }
+.brand b { font-size:17px; font-weight:700; display:block; }
+.brand small { display:block; font-size:12.5px; color:var(--g500); }
+.navg { font-size:11.5px; font-weight:700; color:var(--g400); padding:12px 12px 2px; }
+.nav { display:flex; align-items:center; gap:11px; padding:9px 12px; border-radius:10px; font-size:15px; font-weight:600; color:var(--g600); text-align:left; width:100%; }
+.nav svg { width:20px; height:20px; flex:none; }
+.nav:hover { background:var(--g100); color:var(--g800); }
+.nav[aria-selected=true] { background:var(--blue-50); color:var(--blue); }
+.foot { margin-top:auto; padding:12px; border-radius:14px; background:var(--g50); font-size:12.5px; color:var(--g600); }
+.foot b { color:var(--g800); font-weight:600; }
+main { padding:36px 44px 56px; min-width:0; }
+.page { max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+.page[hidden] { display:none; }
+.eyebrow { font-size:14px; font-weight:600; color:var(--blue); margin-bottom:6px; }
+h1 { font-size:27px; font-weight:700; line-height:1.35; letter-spacing:-0.02em; }
+.sub { font-size:15.5px; color:var(--g600); margin-top:8px; }
+.card { background:#fff; border-radius:20px; padding:22px 24px; min-width:0; }
+.card h3 { font-size:17px; font-weight:700; margin-bottom:2px; }
+.desc { font-size:13.5px; color:var(--g500); margin-bottom:12px; }
+.sec { font-size:18px; font-weight:700; }
+.grid2 { display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.stats { display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); }
+.stat { background:#fff; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:2px; }
+.stat .k { font-size:13.5px; color:var(--g600); font-weight:500; }
+.stat .v { font-size:28px; font-weight:700; letter-spacing:-0.02em; line-height:1.2; }
+.stat .v small { font-size:15px; font-weight:600; color:var(--g500); margin-left:2px; }
+.stat .f { font-size:12.5px; color:var(--g500); }
+.bar { height:6px; border-radius:4px; background:var(--g100); overflow:hidden; margin-top:6px; }
+.bar i { display:block; height:100%; border-radius:4px; background:var(--blue); }
+.chips { display:flex; gap:8px; flex-wrap:wrap; }
+.chip { height:36px; padding:0 15px; border-radius:999px; background:#fff; color:var(--g700); font-size:14px; font-weight:600; border:1px solid var(--g200); }
+.chip[aria-selected=true] { background:var(--g900); color:#fff; border-color:var(--g900); }
+.strat { background:var(--blue-50); border-radius:20px; padding:18px 22px; }
+.strat .t { font-size:12.5px; font-weight:700; color:var(--blue); }
+.strat .lead { font-size:16px; font-weight:700; line-height:1.55; margin:4px 0 10px; }
+.tags { display:flex; flex-wrap:wrap; gap:6px; }
+.tag { display:inline-flex; align-items:center; min-height:24px; padding:2px 9px; border-radius:7px; font-size:12px; font-weight:600; background:#fff; color:var(--g700); }
+.rk { display:inline-flex; height:22px; align-items:center; padding:0 8px; border-radius:6px; font-size:12px; font-weight:700; white-space:nowrap; }
+.rk-h { background:var(--red-50); color:var(--red); } .rk-m { background:var(--orange-50); color:#B35C00; } .rk-l { background:var(--g100); color:var(--g600); } .rk-b { background:var(--blue-50); color:var(--blue); } .rk-g { background:var(--green-50); color:var(--green); }
+.prio { display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+.prio .col { background:#fff; border-radius:20px; padding:16px; border-top:3px solid var(--g300); min-width:0; }
+.prio .col h4 { font-size:14.5px; font-weight:700; }
+.prio .col .s { font-size:12.5px; color:var(--g500); margin:2px 0 8px; }
+.prio .uni { padding:9px 0; border-top:1px solid var(--g100); }
+.prio .uni .top { display:flex; gap:6px; align-items:center; }
+.prio .uni b { flex:1; font-size:13.5px; font-weight:700; }
+.prio .uni p { margin-top:2px; font-size:12px; color:var(--g500); }
+.prio .uni p.nx { color:var(--g800); }
+.tbox { overflow:auto; margin:0 -8px; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th { text-align:left; font-size:12.5px; font-weight:600; color:var(--g500); padding:8px; border-bottom:1px solid var(--g200); white-space:nowrap; }
+td { padding:11px 8px; border-bottom:1px solid var(--g100); vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+td.num { text-align:right; white-space:nowrap; font-weight:700; }
+td.mute { color:var(--g500); font-size:13px; }
+td b { font-weight:600; }
+a.link { color:var(--g900); font-weight:600; text-decoration:none; }
+a.link:hover { color:var(--blue); text-decoration:underline; }
+.week { padding:10px 0; border-bottom:1px solid var(--g100); }
+.week:last-child { border-bottom:none; }
+.week .top { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.week b { font-size:14px; font-weight:700; }
+.week p { margin:6px 0 2px; font-size:13.5px; }
+.week .dw { font-size:12.5px; color:var(--g500); margin:0; }
+.stage { display:grid; grid-template-columns:minmax(6.5rem, auto) 1fr 2rem; gap:8px; align-items:center; font-size:13px; padding:4px 0; color:var(--g700); }
+.stage .bg { height:14px; border-radius:5px; background:var(--g100); overflow:hidden; }
+.stage .bg i { display:block; height:100%; border-radius:5px; background:var(--blue); }
+.btn { display:inline-flex; align-items:center; gap:8px; height:46px; padding:0 20px; border-radius:14px; font-size:15px; font-weight:600; background:var(--blue); color:#fff; text-decoration:none; }
+.btn:hover { background:var(--blue-d); }
+.btn svg { width:19px; height:19px; }
+.mini { font-size:12.5px; color:var(--g500); }
+.fail { color:var(--g500); font-size:13px; padding:12px 0; }
+@media (max-width: 760px) {
+  .app { grid-template-columns:1fr; }
+  .side { flex-direction:row; align-items:center; gap:4px; padding:10px; overflow-x:auto; height:auto; border-right:none; border-bottom:1px solid var(--g200); z-index:5; }
+  .brand { padding:0 8px 0 4px; } .brand small, .navg, .foot { display:none; } .brand b { font-size:15px; white-space:nowrap; }
+  .nav { width:auto; white-space:nowrap; padding:8px 10px; font-size:14px; }
+  main { padding:18px 14px 32px; } h1 { font-size:21px; } .hide-narrow { display:none; }
+}
+.lock { position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; background:var(--g50,#F9FAFB); padding:16px; }
+.lock form { width:100%; max-width:360px; background:#fff; border-radius:20px; padding:28px 24px; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+.lock h1 { font-size:20px; margin-bottom:6px; } .lock p { font-size:14px; color:var(--g600); margin-bottom:16px; }
+.lock input { width:100%; height:48px; border:1px solid var(--g300); border-radius:12px; padding:0 14px; font-size:16px; font-family:inherit; }
+.lock button { width:100%; height:48px; margin-top:10px; border:0; border-radius:12px; background:var(--blue); color:#fff; font-size:16px; font-weight:600; font-family:inherit; cursor:pointer; }
+.lock .err { color:#F04452; font-size:13px; margin:8px 0 0; min-height:18px; }
+.app[hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<div class="lock" id="lock"><form id="lockForm" autocomplete="off"><h1>공공사업팀 업무 현황</h1><p>비밀번호를 입력해 주세요.</p><input id="lockPw" type="password" inputmode="numeric" autocomplete="current-password" aria-label="비밀번호" autofocus><button type="submit" id="lockBtn">열기</button><p class="err" id="lockErr"></p></form></div>
+<div class="app" hidden>
+  <aside class="side" role="tablist" aria-label="메뉴">
+    <div class="brand"><b>공공사업팀 업무 현황</b><small>담당 최희주</small></div>
+    <p class="navg">현황</p>
+    <button class="nav" role="tab" aria-selected="true" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12H3l9-9 9 9h-2"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M10 12h4v4h-4z"/></svg>홈</button>
+    <button class="nav" role="tab" aria-selected="false" data-go="proj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="6" rx="2"/><rect x="4" y="14" width="16" height="6" rx="2"/></svg>사업 현황</button>
+    <button class="nav" role="tab" aria-selected="false" data-go="sales"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="9"/><path d="M15 9l6-6"/></svg>영업 현황</button>
+    <button class="nav" role="tab" aria-selected="false" data-go="splan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>사업계획서</button>
+    <button class="nav" role="tab" aria-selected="false" data-go="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>신규사업 기획</button>
+    <button class="nav" role="tab" aria-selected="false" data-go="bids"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>신규사업 공고</button>
+    <div class="foot"><b>갱신</b><br><span id="updated">-</span></div>
+  </aside>
+
+  <main>
+    <section class="page" data-page="home">
+      <div class="card" style="padding:26px 28px"><p class="eyebrow">공공사업팀</p><h1>업무 현황 한눈에 보기</h1><p class="sub">진행 사업, 대학 영업, 신규사업 공고와 기획을 정리했습니다.</p></div>
+      <div class="stats">
+        <button class="stat" data-jump="proj" style="text-align:left;cursor:pointer"><span class="k">진행 중인 사업</span><span class="v"><span id="h-proj">-</span><small>개</small></span><span class="f">사업 현황 보기</span></button>
+        <button class="stat" data-jump="sales" style="text-align:left;cursor:pointer"><span class="k">영업 접촉 대학</span><span class="v"><span id="h-contact">-</span><small id="h-contact-t"></small></span><span class="f">영업 현황 보기</span></button>
+        <button class="stat" data-jump="bids" style="text-align:left;cursor:pointer"><span class="k">7일 안 마감 공고</span><span class="v"><span id="h-bids">-</span><small>건</small></span><span class="f">신규사업 공고 보기</span></button>
+        <button class="stat" data-jump="plan" style="text-align:left;cursor:pointer"><span class="k">기획 중인 신규사업</span><span class="v"><span id="h-plans">-</span><small>개</small></span><span class="f">신규사업 기획 보기</span></button>
+      </div>
+      <div class="strat"><p class="t">영업 전략 한 줄</p><p class="lead" id="h-lead" style="margin-bottom:0">-</p></div>
+      <div class="grid2">
+        <div class="card"><h3>2주 안에 챙길 일</h3><p class="desc">사업·영업 다음 할 일 중 기한이 2주 안인 것</p><div id="h-todo"></div></div>
+        <div class="card"><h3>신규사업 기획</h3><p class="desc">기획 중인 사업과 한 줄 요약</p><div id="h-plan"></div></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="proj" hidden>
+      <div><p class="eyebrow">사업 현황</p><h1>진행 중인 사업, 다음에 할 일</h1><p class="sub">완료·보류를 뺀 사업의 단계와 다음 할 일입니다.</p></div>
+      <div class="stats">
+        <div class="stat"><span class="k">진행 중인 사업</span><span class="v"><span id="ps-n">-</span><small>개</small></span></div>
+        <div class="stat"><span class="k">2주 안 다음 할 일</span><span class="v"><span id="ps-soon">-</span><small>건</small></span></div>
+        <div class="stat"><span class="k">기한 지난 다음 할 일</span><span class="v"><span id="ps-over">-</span><small>건</small></span></div>
+        <div class="stat"><span class="k">리스크 높음</span><span class="v"><span id="ps-high">-</span><small>개</small></span></div>
+      </div>
+      <div id="proj-groups" style="display:flex;flex-direction:column;gap:16px"></div>
+    </section>
+
+    <section class="page" data-page="sales" hidden>
+      <div><p class="eyebrow">영업 현황</p><h1>27년 대학 영업, 지금 어디까지 왔나요</h1><p class="sub">지방대학 부트캠프 캠페인(20개교·23개 사업단) 기준입니다. 접촉·회신·미팅은 실제 기록만 셉니다.</p></div>
+      <div class="strat"><p class="t">전략 한 줄</p><p class="lead" id="s-lead">-</p><div class="tags" id="s-pts"></div></div>
+      <div class="chips" role="tablist" id="tabs">
+        <button class="chip" role="tab" aria-selected="true" data-tab="over">한눈에 보기</button>
+        <button class="chip" role="tab" aria-selected="false" data-tab="list">대학별 다음 할 일</button>
+        <button class="chip" role="tab" aria-selected="false" data-tab="report">주간보고</button>
+        <button class="chip" data-jump="splan">사업계획서 보기</button>
+      </div>
+      <div data-panel="over" style="display:flex;flex-direction:column;gap:16px">
+        <div class="stats" id="kpis"></div>
+        <div><p class="sec">우선순위</p><p class="desc" style="margin:2px 0 0">이 순서로 접촉합니다.</p></div>
+        <div class="prio" id="prio"></div>
+        <div class="grid2">
+          <div class="card"><h3>이번 주와 다음 주</h3><p class="desc">주차별 실행 계획과 완료 기준</p><div id="weeks"></div></div>
+          <div class="card"><h3>단계별 대학 수</h3><p class="desc">캠페인 대학, 후보에서 계약까지</p><div id="stages"></div></div>
+        </div>
+      </div>
+      <div data-panel="list" hidden><div class="card"><h3>대학별 다음 할 일</h3><p class="desc">우선순위 순</p><div class="tbox"><table>
+        <thead><tr><th>순위</th><th>대학</th><th class="hide-narrow">우선순위</th><th class="hide-narrow">지역</th><th>단계</th><th>다음 할 일</th><th>기한</th></tr></thead>
+        <tbody id="t-acc"></tbody></table></div></div></div>
+      <div data-panel="report" hidden><div class="card"><h3>주간보고 (주요 내용 보고)</h3><p class="desc">요약 3줄 · 접촉 기준 · 진행 현황 · 우선 접촉 대학 · 금주 실적과 차주 계획 · 이슈</p><div id="report"></div></div></div>
+    </section>
+
+    <section class="page" data-page="splan" hidden>
+      <div><p class="eyebrow">사업계획서</p><h1>27년 대학 영업 계획</h1><p class="sub">목표, 2 TRACK 영업, 1차 6개교 선정 근거, 대상 지역, 일정, 원칙을 한 장으로 정리했습니다.</p></div>
+      <div id="sp-act" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <div class="card" style="padding:12px"><div id="sp-body" style="overflow-x:auto;-webkit-overflow-scrolling:touch"></div></div>
+    </section>
+    <section class="page" data-page="bids" hidden>
+      <div><p class="eyebrow">신규사업 공고</p><h1>이번에 볼 만한 공고</h1><p class="sub" id="bid-sub">나라장터·교육부 등에서 월·수·금 오전에 모은 공고입니다.</p></div>
+      <div class="stats">
+        <div class="stat"><span class="k">수집한 공고</span><span class="v"><span id="bs-n">-</span><small>건</small></span></div>
+        <div class="stat"><span class="k">새로 올라온 공고</span><span class="v"><span id="bs-new">-</span><small>건</small></span></div>
+        <div class="stat"><span class="k">7일 안 마감</span><span class="v"><span id="bs-soon">-</span><small>건</small></span></div>
+        <div class="stat"><span class="k">관심 공고</span><span class="v"><span id="bs-saved">-</span><small>건</small></span></div>
+      </div>
+      <div class="card"><h3>공고 목록</h3><p class="desc">마감 순 · 공고명을 누르면 원문으로 이동합니다.</p><div class="tbox"><table>
+        <thead><tr><th>마감</th><th>공고명</th><th class="hide-narrow">기관</th><th style="text-align:right">추정 금액</th></tr></thead>
+        <tbody id="t-bids"></tbody></table></div></div>
+    </section>
+    <section class="page" data-page="plan" hidden>
+      <div><p class="eyebrow">신규사업 기획</p><h1>새로 키울 사업, 어디까지 준비됐나요</h1><p class="sub">기획 중인 신규사업의 한 줄 요약, 근거, 구성, 다음 할 일입니다.</p></div>
+      <div id="plans" style="display:flex;flex-direction:column;gap:16px"></div>
+      <div class="card"><h3>참고: 2026년 양자 교육 관련 나라장터 입찰</h3><p class="desc">재공고는 단일응찰·무응찰 등으로 경쟁이 약했던 건입니다.</p><div class="tbox"><table>
+        <thead><tr><th>공고일</th><th>공고명</th><th class="hide-narrow">발주·수요기관</th><th style="text-align:right">사업 규모</th><th>낙찰·수행사</th></tr></thead>
+        <tbody id="t-refs"></tbody></table></div></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  const STAGES = ['후보', '담당자 연결', '수요진단', '제안', '공동기획·견적 협의', '구매절차', '계약'];
+  const yes = v => v === true || v === 'true';
+  const today = () => { const t = new Date(); t.setHours(0, 0, 0, 0); return t; };
+  const days = s => s ? Math.round((new Date(String(s).slice(0, 10) + 'T00:00:00') - today()) / 86400000) : null;
+  const date = s => { if (!s) return ''; const d = new Date(String(s).slice(0, 10) + 'T00:00:00'); return `${d.getMonth() + 1}/${d.getDate()} (${'일월화수목금토'[d.getDay()]})`; };
+  const badge = n => n === null ? ['기한 없음', 'rk-l'] : n < 0 ? [`${-n}일 지남`, 'rk-h'] : n === 0 ? ['오늘', 'rk-h'] : n === 1 ? ['내일', 'rk-h'] : n <= 7 ? [`D-${n}`, 'rk-m'] : [`D-${n}`, 'rk-l'];
+  const eok = v => { const a = Math.abs(Number(v || 0)); return a >= 1e8 ? (a / 1e8).toFixed(2).replace(/\.?0+$/, '') + '억원' : Math.round(a / 1e4).toLocaleString('ko-KR') + '만원'; };
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+  const cell = (tr, text, cls) => { const td = el('td', cls, text); tr.appendChild(td); return td; };
+  const dueCell = (tr, due) => { const td = el('td'); const [lab, c] = badge(days(due)); td.appendChild(el('span', 'rk ' + c, lab)); if (due) { const d = el('div', 'mini', date(due)); d.style.marginTop = '2px'; td.appendChild(d); } tr.appendChild(td); };
+  const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  // 데이터는 비밀번호로 잠긴 묶음(data/locked.json)을 풀어서 쓴다
+  let B = { json: {}, files: {} }; const fileUrl = {};
+  const load = n => Promise.resolve(B.json[n] || []);
+  const furl = p => { const k = String(p || '').replace(/^data\//, ''), f = B.files[k]; if (!f) return ''; if (!fileUrl[k]) { const bin = atob(f.b64), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); fileUrl[k] = URL.createObjectURL(new Blob([u], { type: f.type })); } return fileUrl[k]; };
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const unlock = async (pw, locked) => {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(locked.salt), iterations: locked.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(locked.iv) }, key, b64(locked.ct));
+    return JSON.parse(new TextDecoder().decode(plain));
+  };
+
+  const goPage = name => {
+    document.querySelectorAll('[data-go]').forEach(x => x.setAttribute('aria-selected', String(x.dataset.go === name)));
+    document.querySelectorAll('.page').forEach(p => { p.hidden = p.dataset.page !== name; });
+    window.scrollTo(0, 0);
+  };
+  document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => goPage(b.dataset.go)));
+  document.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => goPage(b.dataset.jump)));
+  document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+    document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
+  }));
+
+  const lockedP = fetch('data/locked.json?v=2610271607').then(r => r.json());
+  const tryOpen = async pw => { B = await unlock(pw, await lockedP); try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); };
+  document.getElementById('lockForm').addEventListener('submit', async e => {
+    e.preventDefault(); const btn = document.getElementById('lockBtn'), err = document.getElementById('lockErr'); btn.disabled = true; err.textContent = '';
+    try { await tryOpen(document.getElementById('lockPw').value); } catch { err.textContent = '비밀번호가 맞지 않아요.'; btn.disabled = false; }
+  });
+
+  const render = () => Promise.all(['meta', 'projects', 'sales', 'sales_kpi', 'weeks', 'strategy', 'bids', 'plans', 'plan_refs'].map(load)).then(([meta, projects, sales, kpi, weeks, strategy, bids, plans, refs]) => {
+    // 홈
+    set('h-proj', projects.length); set('h-plans', plans.length);
+    const ck = kpi.find(r => r.metric === '접촉 대학'); if (ck) { set('h-contact', ck.value); set('h-contact-t', '/' + ck.target); }
+    set('h-bids', bids.filter(b => { const d = days(b.deadline); return d !== null && d >= 0 && d <= 7; }).length);
+    const hs = Array.isArray(strategy) ? strategy[0] : strategy; if (hs) set('h-lead', hs.strategy);
+    const todo = [].concat(projects.map(p => ({ kind: '사업', who: p.name, what: p.next, due: p.due })), sales.filter(a => yes(a.campaignFocus) && a.stage !== '보류').map(a => ({ kind: '영업', who: a.name, what: a.next, due: a.due })))
+      .map(t => Object.assign(t, { d: days(t.due) })).filter(t => t.d !== null && t.d <= 14).sort((a, b) => a.d - b.d);
+    const ht = document.getElementById('h-todo');
+    if (!todo.length) ht.appendChild(el('p', 'mini', '2주 안에 기한이 있는 일이 없습니다.'));
+    todo.slice(0, 10).forEach(t => { const row = el('div', 'week'); const top = el('div', 'top'); const [lab, c] = badge(t.d); top.appendChild(el('span', 'rk ' + c, lab)); top.appendChild(el('span', 'rk ' + (t.kind === '영업' ? 'rk-b' : 'rk-l'), t.kind)); top.appendChild(el('b', '', t.who)); row.appendChild(top); row.appendChild(el('p', '', t.what || '-')); ht.appendChild(row); });
+    if (todo.length > 10) ht.appendChild(el('p', 'mini', `외 ${todo.length - 10}건`));
+    const hp = document.getElementById('h-plan');
+    plans.slice().sort((a, b) => Number(a.order) - Number(b.order)).forEach(p => { const row = el('div', 'week'); const top = el('div', 'top'); top.appendChild(el('span', 'rk rk-b', p.tag)); top.appendChild(el('span', 'rk rk-l', p.stage)); top.appendChild(el('b', '', p.title)); row.appendChild(top); row.appendChild(el('p', '', p.oneLine)); hp.appendChild(row); });
+
+    // 신규사업 기획
+    const pb2 = document.getElementById('plans');
+    const listBlock = (label, text, sep) => { const b = el('div'); const l = el('p', 'eyebrow', label); l.style.marginBottom = '4px'; b.appendChild(l); const ul = el('ul'); ul.style.cssText = 'padding-left:18px;font-size:14px;color:var(--g800);display:flex;flex-direction:column;gap:3px'; String(text || '').split(sep || ' | ').filter(Boolean).forEach(t => ul.appendChild(el('li', '', t))); if (!ul.children.length) ul.appendChild(el('li', '', '-')); b.appendChild(ul); return b; };
+    const textBlock = (label, text) => { const b = el('div'); const l = el('p', 'eyebrow', label); l.style.marginBottom = '4px'; b.appendChild(l); const t = el('p', '', text || '-'); t.style.fontSize = '14px'; b.appendChild(t); return b; };
+    plans.slice().sort((a, b) => Number(a.order) - Number(b.order)).forEach(p => {
+      const c = el('div', 'card'); const top = el('div', 'tags'); top.style.marginBottom = '6px'; top.appendChild(el('span', 'rk rk-l', String(p.order))); top.appendChild(el('span', 'rk rk-b', p.tag)); top.appendChild(el('span', 'rk ' + (/검토|협의|준비/.test(p.stage) ? 'rk-m' : 'rk-g'), p.stage)); c.appendChild(top);
+      const h = el('h3', '', p.title); h.style.fontSize = '20px'; c.appendChild(h);
+      const one = el('div', 'strat'); one.style.cssText = 'padding:12px 16px;margin:10px 0 14px;border-radius:14px'; const ol = el('p', 'lead', p.oneLine); ol.style.cssText = 'margin:0;font-size:15px'; one.appendChild(ol); c.appendChild(one);
+      const abt = String(p.about || '').split(' || ').filter(Boolean);
+      if (abt.length) { const ab0 = el('div'); ab0.style.cssText = 'border:1px solid var(--blue-50);border-radius:14px;padding:12px 16px;margin-bottom:12px'; const at = el('p', '', p.aboutTitle || '한눈에 보기'); at.style.cssText = 'font-size:14px;font-weight:700;color:var(--blue);margin-bottom:4px'; ab0.appendChild(at); const ul0 = el('ul'); ul0.style.cssText = 'padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:2px'; abt.forEach(t => ul0.appendChild(el('li', '', t))); ab0.appendChild(ul0); c.appendChild(ab0); }
+      const pics = String(p.images || '').split(' || ').filter(Boolean).map(s => s.split('|')).filter(a => /^[\w.-]+\.jpg$/.test(a[0].trim()));
+      if (pics.length) { const row = el('div'); row.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px';
+        pics.forEach(([f2, cap, cr]) => { const fg = el('figure'); fg.style.cssText = 'margin:0;flex:1 1 180px;min-width:0'; const im = el('img'); im.src = 'img/' + f2.trim(); im.alt = cap || ''; im.loading = 'lazy'; im.style.cssText = 'width:100%;height:160px;object-fit:cover;border-radius:12px;display:block'; fg.appendChild(im); const fc = el('figcaption', '', cap || ''); fc.style.cssText = 'font-size:12.5px;font-weight:600;margin-top:4px'; fg.appendChild(fc); const crd = el('div', 'mini', cr || ''); crd.style.fontSize = '11px'; fg.appendChild(crd); row.appendChild(fg); });
+        c.appendChild(row); }
+      const sts = String(p.stats || '').split(' || ').filter(Boolean).map(s => s.split('|'));
+      if (sts.length) { const row = el('div'); row.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px';
+        sts.forEach(([k3, v3, n3]) => { const b = el('div'); b.style.cssText = 'background:var(--g50);border-radius:14px;padding:12px 14px;flex:1 1 140px'; b.appendChild(el('p', 'mini', k3 || '')); const vv = el('p', '', v3 || ''); vv.style.cssText = 'font-size:22px;font-weight:700;margin-top:2px;color:var(--blue)'; b.appendChild(vv); b.appendChild(el('p', 'mini', n3 || '')); row.appendChild(b); });
+        c.appendChild(row); }
+      const dif = String(p.diff || '').split(' || ').filter(Boolean).map(s => s.split('|'));
+      if (dif.length) { const box = el('div'); box.style.cssText = 'background:var(--g50);border-radius:14px;padding:12px 16px;margin-bottom:14px'; const t = el('p', '', p.diffTitle || '차별점'); t.style.cssText = 'font-size:14px;font-weight:700;margin-bottom:6px'; box.appendChild(t);
+        const tb = el('table'); tb.innerHTML = '<thead><tr><th>구분</th><th>기존</th><th>신규</th></tr></thead>'; const bd = el('tbody');
+        dif.forEach(([k, a, b]) => { const tr = el('tr'); const t1 = cell(tr, k || ''); t1.style.cssText = 'font-weight:700;white-space:nowrap'; const t2 = cell(tr, a || ''); t2.style.color = 'var(--g500)'; const t3 = cell(tr, b || ''); t3.style.cssText = 'font-weight:600;color:var(--blue)'; bd.appendChild(tr); });
+        tb.appendChild(bd); box.appendChild(tb); if (p.diffNote) { const n = el('p', 'mini', p.diffNote); n.style.marginTop = '6px'; box.appendChild(n); } c.appendChild(box); }
+      const g = el('div', 'grid2'); g.style.gap = '18px';
+      g.appendChild(textBlock('대상', p.target)); g.appendChild(textBlock('판로·발주처', p.channels));
+      g.appendChild(listBlock('근거', p.evidence)); g.appendChild(listBlock('구성', p.structure));
+      const wide = b => { b.style.gridColumn = '1 / -1'; g.appendChild(b); };
+      if (p.trends) wide(listBlock(p.trendsTitle || '흐름', p.trends));
+      if (p.keywords) { const kb = el('div'); const kl = el('p', 'eyebrow', 'MZ 핫 키워드'); kl.style.marginBottom = '6px'; kb.appendChild(kl); const chips = el('div', 'tags'); chips.style.marginBottom = '6px'; String(p.keywords).split(' || ').filter(Boolean).forEach(k => { const i = k.indexOf(':'); const ch = el('span', 'tag', i > 0 ? k.slice(0, i) : k); ch.style.cssText = 'background:var(--blue-50);color:var(--blue)'; chips.appendChild(ch); }); kb.appendChild(chips); kb.appendChild(listBlock('', p.keywords, ' || ').lastChild); wide(kb); }
+      if (p.insights) wide(listBlock('기획에 반영할 점', p.insights));
+      g.appendChild(listBlock('다음 할 일', p.next)); g.appendChild(textBlock('리스크', p.risks));
+      if (p.articles) { const ab = el('div'); const al = el('p', 'eyebrow', '레퍼런스 기사'); al.style.marginBottom = '4px'; ab.appendChild(al); String(p.articles).split(' || ').filter(Boolean).forEach(a => { const s = a.split(' | '); const url = (s[2] || '').trim(); const row = el('div'); row.style.cssText = 'font-size:14px;padding:2px 0'; if (/^https:\/\//.test(url)) { const ln = el('a', 'link', s[0]); ln.href = url; ln.target = '_blank'; ln.rel = 'noopener'; ln.style.color = 'var(--blue)'; row.appendChild(ln); } else row.appendChild(el('span', '', s[0])); row.appendChild(el('span', 'mini', ' ' + (s[1] || ''))); ab.appendChild(row); }); wide(ab); }
+      c.appendChild(g); const src = el('p', 'mini', '자료: ' + (p.source || '-')); src.style.marginTop = '14px'; c.appendChild(src); pb2.appendChild(c);
+    });
+    const rb2 = document.getElementById('t-refs');
+    refs.slice().sort((a, b) => String(a.posted).localeCompare(String(b.posted))).forEach(r => { const tr = el('tr'); cell(tr, date(r.posted), 'mute'); const tt = cell(tr, ''); tt.appendChild(el('b', '', r.title)); const m = el('div', 'mini'); m.style.cssText = 'margin-top:3px;display:flex;gap:6px;flex-wrap:wrap'; m.appendChild(el('span', 'rk ' + (r.relation === '직접' ? 'rk-b' : 'rk-l'), '양자 ' + r.relation)); if (yes(r.rebid)) m.appendChild(el('span', 'rk rk-m', '재공고')); m.appendChild(el('span', '', r.noticeNo)); tt.appendChild(m); cell(tr, r.org, 'mute hide-narrow'); cell(tr, eok(r.budget), 'num'); const w = cell(tr, ''); if (r.winner === '무응찰') w.appendChild(el('span', 'rk rk-h', '무응찰')); else w.appendChild(el('span', '', r.winner)); rb2.appendChild(tr); });
+
+    const m = Array.isArray(meta) ? meta[0] : meta; if (m && m.at) set('updated', String(m.at).replace('T', ' ').slice(0, 16));
+
+    // 사업 현황
+    set('ps-n', projects.length);
+    set('ps-soon', projects.filter(p => { const d = days(p.due); return d !== null && d >= 0 && d <= 14; }).length);
+    set('ps-over', projects.filter(p => { const d = days(p.due); return d !== null && d < 0; }).length);
+    set('ps-high', projects.filter(p => p.risk === '높음').length);
+    // 큰 사업별 카드
+    const pgs = document.getElementById('proj-groups'); const bodies = {};
+    [...new Set(projects.map(r => r.group || '기타'))].forEach(g => {
+      const card = el('div', 'card'); const hd = el('div'); hd.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px'; hd.appendChild(el('h3', '', g)); hd.appendChild(el('span', 'rk rk-b', projects.filter(r => (r.group || '기타') === g).length + '개')); card.appendChild(hd);
+      const box = el('div', 'tbox'); const tb = el('table'); tb.innerHTML = '<thead><tr><th>사업</th><th>단계</th><th class="hide-narrow">진행률</th><th>다음 할 일</th><th>기한</th><th class="hide-narrow">리스크</th></tr></thead>'; const body = el('tbody'); tb.appendChild(body); box.appendChild(tb); card.appendChild(box); pgs.appendChild(card); bodies[g] = body;
+    });
+    projects.forEach(r => { const pb = bodies[r.group || '기타'];
+      const tr = el('tr'); cell(tr, '').appendChild(el('b', '', r.name)); cell(tr, '').appendChild(el('span', 'rk rk-b', r.stage));
+      const pg = el('td', 'hide-narrow'); pg.style.minWidth = '6rem'; pg.appendChild(el('span', 'mini', (Number(r.progress) || 0) + '%')); const bar = el('div', 'bar'); const f = el('i'); f.style.width = Math.min(100, Number(r.progress) || 0) + '%'; bar.appendChild(f); pg.appendChild(bar); tr.appendChild(pg);
+      cell(tr, r.next || '-'); dueCell(tr, r.due);
+      const rk = cell(tr, '', 'hide-narrow'); if (r.risk) rk.appendChild(el('span', 'rk ' + (r.risk === '높음' ? 'rk-h' : r.risk === '보통' ? 'rk-m' : 'rk-l'), r.risk));
+      pb.appendChild(tr);
+    });
+    if (!projects.length) pgs.appendChild(el('p', 'fail', '자료가 없습니다'));
+
+    // 영업 현황
+    const g = Array.isArray(strategy) ? strategy[0] : strategy;
+    if (g) { set('s-lead', g.strategy); String(g.points || '').split(' | ').filter(Boolean).forEach(t => document.getElementById('s-pts').appendChild(el('span', 'tag', t))); }
+    const rb = document.getElementById('report');
+    if (g && g.report_url && furl(g.report_url)) { const a = el('a', 'btn'); a.href = furl(g.report_url); a.download = '27년대학영업_주간보고.pdf'; a.target = '_blank'; a.rel = 'noopener'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode('주간보고 PDF 보기')); rb.appendChild(a); if (g.report_at) { const p = el('p', 'mini', '작성 ' + String(g.report_at).replace('T', ' ').slice(0, 16)); p.style.marginTop = '8px'; rb.appendChild(p); } }
+    else rb.appendChild(el('p', 'mini', '아직 올라간 주간보고가 없습니다.'));
+    // 사업계획서 페이지
+    const sa = document.getElementById('sp-act'), sbd = document.getElementById('sp-body');
+    if (g && g.plan_url && furl(g.plan_url)) {
+      const pa = el('a', 'btn'); pa.href = furl(g.plan_url); pa.download = g.plan_file || '27년 대학 영업 계획.pdf'; pa.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; pa.appendChild(document.createTextNode('PDF 다운로드')); sa.appendChild(pa);
+      const html = B.files['sales-plan.html'];
+      if (html) {
+        const fr = el('iframe'); fr.title = '27년 대학 영업 계획'; fr.style.cssText = 'display:block;width:100%;min-width:1100px;height:820px;border:0';
+        fr.srcdoc = new TextDecoder().decode(Uint8Array.from(atob(html.b64), c => c.charCodeAt(0)));
+        const fit = () => { try { const n = fr.contentDocument.documentElement.scrollHeight; if (n > 100) fr.style.height = (n + 8) + 'px'; } catch {} };   // 숨겨진 상태에서는 높이가 0이라 페이지를 열 때 다시 맞춘다
+        fr.addEventListener('load', fit); document.querySelectorAll('[data-go=splan],[data-jump=splan]').forEach(b => b.addEventListener('click', () => setTimeout(fit, 50)));
+        sbd.appendChild(fr);
+      } else if (g.plan_img && furl(g.plan_img)) { const im = el('img'); im.src = furl(g.plan_img); im.alt = '27년 대학 영업 계획'; im.style.cssText = 'width:100%;height:auto;display:block'; sbd.appendChild(im); }
+    } else sbd.appendChild(el('p', 'mini', '아직 올라간 사업계획서가 없습니다.'));
+    const kb = document.getElementById('kpis');
+    kpi.forEach(r => {
+      const v = Number(r.value), t = Number(r.target), pct = Math.min(100, Math.round(v / Math.max(t, 1) * 100));
+      const box = el('div', 'stat'); box.appendChild(el('span', 'k', r.metric)); const vv = el('span', 'v', String(v)); vv.appendChild(el('small', '', '/' + t)); box.appendChild(vv);
+      const bar = el('div', 'bar'); const fl = el('i'); fl.style.width = pct + '%'; if (pct >= 100) fl.style.background = 'var(--green)'; bar.appendChild(fl); box.appendChild(bar); box.appendChild(el('span', 'f', r.note)); kb.appendChild(box);
+    });
+    const pr = document.getElementById('prio');
+    [['1차 집중', '11/2 주간 첫 접촉', 'var(--blue)'], ['2차', '11/16 주간 접촉', 'var(--g700)'], ['확인 후 순위 조정', '공식 창구 확인되는 대로 순차 접촉', 'var(--g400)'], ['기존 관계 유지', '신규 영업 자원 배정 제외', 'var(--g300)']].forEach(([wv, sub, col], wi) => {
+      const L = sales.filter(a => (a.wave || '확인 후 순위 조정') === wv).sort((x, z) => Number(x.rank) - Number(z.rank));
+      const c = el('div', 'col'); c.style.borderTopColor = col; const h = el('h4', '', `${wv} · ${L.length}곳`); if (!wi) h.style.color = 'var(--blue)'; c.appendChild(h); c.appendChild(el('p', 's', sub));
+      if (wi >= 2) { const n = el('p', 's', L.map(a => a.name.replace(/^국립/, '').replace(/(대학교|학교)$/, '대')).join(', ')); n.style.color = 'var(--g700)'; c.appendChild(n); }
+      else L.forEach(a => { const u = el('div', 'uni'); const top = el('div', 'top'); top.appendChild(el('b', '', `${a.rank}. ${a.name.replace(/학교$/, '')}`)); top.appendChild(el('span', 'mini', a.region)); top.appendChild(el('span', 'rk ' + (STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); u.appendChild(top); if (a.why) u.appendChild(el('p', '', a.why)); const d = days(a.due); u.appendChild(el('p', 'nx', (a.next || '-') + (d === null ? '' : d < 0 ? ` · ${-d}일 지남` : ` · D-${d}`))); c.appendChild(u); });
+      pr.appendChild(c);
+    });
+    const wb = document.getElementById('weeks'); const iso = new Date().toISOString().slice(0, 10);
+    let wi = weeks.findIndex(x => iso <= x.to); if (wi < 0) wi = weeks.length - 1;
+    weeks.slice(wi, wi + 2).forEach((x, j) => { const d = el('div', 'week'); const top = el('div', 'top'); const off = yes(x.off), done = yes(x.done); top.appendChild(el('span', 'rk ' + (off ? 'rk-l' : done ? 'rk-g' : j === 0 ? 'rk-b' : 'rk-l'), `${date(x.from)}~${date(x.to)}`)); top.appendChild(el('b', '', (j === 0 ? '이번 주 · ' : '다음 주 · ') + x.title + (done ? ' (완료)' : ''))); d.appendChild(top); d.appendChild(el('p', '', x.todo)); if (x.done_when) d.appendChild(el('p', 'dw', '완료 기준: ' + x.done_when)); wb.appendChild(d); });
+    const sb = document.getElementById('stages'); const camp = sales.filter(a => yes(a.campaignFocus)); const counts = STAGES.map(s => ({ s, n: camp.filter(a => a.stage === s).length })); const max = Math.max(1, ...counts.map(r => r.n));
+    counts.forEach(r => { const row = el('div', 'stage'); row.appendChild(el('span', '', r.s)); const bg = el('div', 'bg'); const f = el('i'); f.style.width = (r.n / max * 100) + '%'; if (!r.n) f.style.background = 'transparent'; bg.appendChild(f); row.appendChild(bg); const n = el('span', '', String(r.n)); n.style.textAlign = 'right'; n.style.fontWeight = '700'; row.appendChild(n); sb.appendChild(row); });
+    const ab = document.getElementById('t-acc');
+    sales.slice().sort((a, b) => Number(a.rank) - Number(b.rank)).forEach(a => { const tr = el('tr'); cell(tr, String(a.rank), 'mute'); cell(tr, '').appendChild(el('b', '', a.name)); cell(tr, a.wave || '-', 'mute hide-narrow'); cell(tr, a.region, 'mute hide-narrow'); cell(tr, '').appendChild(el('span', 'rk ' + (a.stage === '보류' ? 'rk-h' : STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); cell(tr, a.next || '-'); dueCell(tr, a.due); ab.appendChild(tr); });
+
+    // 신규사업 공고
+    set('bs-n', bids.length); set('bs-new', bids.filter(b => yes(b.isNew)).length); set('bs-saved', bids.filter(b => yes(b.saved)).length);
+    set('bs-soon', bids.filter(b => { const d = days(b.deadline); return d !== null && d >= 0 && d <= 7; }).length);
+    if (bids[0] && bids[0].collected) set('bid-sub', `나라장터·교육부 등에서 월·수·금 오전에 모은 공고입니다. 마지막 수집 ${String(bids[0].collected).replace('T', ' ').slice(0, 16)}`);
+    const bb = document.getElementById('t-bids');
+    bids.forEach(r => { const tr = el('tr'); dueCell(tr, r.deadline); const tt = cell(tr, ''); const a = el('a', 'link', r.title); if (/^https:\/\//.test(r.url || '')) { a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; } tt.appendChild(a); const meta = el('div', 'mini'); meta.style.cssText = 'margin-top:3px;display:flex;gap:6px;flex-wrap:wrap'; meta.appendChild(el('span', 'rk rk-l', r.source)); if (yes(r.isNew)) meta.appendChild(el('span', 'rk rk-b', '새 공고')); if (yes(r.saved)) meta.appendChild(el('span', 'rk rk-g', '관심')); tt.appendChild(meta); cell(tr, r.org, 'mute hide-narrow'); cell(tr, Number(r.amount) ? eok(r.amount) : '-', 'num'); bb.appendChild(tr); });
+  });
+  (async () => { let pw = ''; try { pw = sessionStorage.getItem('tsPw') || ''; } catch {} if (pw) { try { await tryOpen(pw); } catch { try { sessionStorage.removeItem('tsPw'); } catch {} } } })();
+})();
+</script>
+</body>
+</html>
