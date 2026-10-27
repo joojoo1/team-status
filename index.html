@@ -100,6 +100,36 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 .lock button { width:100%; height:48px; margin-top:10px; border:0; border-radius:12px; background:var(--blue); color:#fff; font-size:16px; font-weight:600; font-family:inherit; cursor:pointer; }
 .lock .err { color:#F04452; font-size:13px; margin:8px 0 0; min-height:18px; }
 .app[hidden] { display:none !important; }
+.sp-bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.btn.ghost { background:#fff; color:var(--g800); border:1px solid var(--g300); }
+.sp-msg { font-size:13px; color:var(--g600); }
+.sp-sum { background:var(--blue-50); border-radius:20px; padding:20px 24px; }
+.sp-sum .t { font-size:13px; font-weight:700; color:var(--blue); margin-bottom:8px; }
+.sp-sum ol { margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; }
+.sp-sum li { font-size:16px; line-height:1.6; color:var(--g900); font-weight:500; }
+.sp-goals { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.sp-goal { background:#fff; border-radius:16px; padding:16px 18px; border:1px solid var(--g200); }
+.sp-goal .k { font-size:13px; color:var(--g600); } .sp-goal .v { font-size:22px; font-weight:700; color:var(--g900); margin:4px 0; } .sp-goal .n { font-size:13px; color:var(--g600); }
+.sp-tracks { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.sp-tr { background:#fff; border-radius:20px; border:1px solid var(--g200); border-top:5px solid var(--blue); padding:18px 20px; }
+.sp-tr.t2 { border-top-color:#2f7d5b; } .sp-tr h3 { font-size:17px; color:var(--blue); margin-bottom:10px; } .sp-tr.t2 h3 { color:#2f7d5b; }
+.sp-row { display:grid; grid-template-columns:72px 1fr; gap:10px; padding:8px 0; border-top:1px solid var(--g100); font-size:14px; line-height:1.6; }
+.sp-row .k { color:var(--g600); font-weight:700; }
+.sp-kpi { display:grid; grid-template-columns:repeat(auto-fit,minmax(64px,1fr)); gap:6px; margin-top:10px; }
+.sp-kpi div { background:var(--g50,#F9FAFB); border-radius:10px; padding:8px 4px; text-align:center; font-size:12px; color:var(--g600); }
+.sp-kpi b { display:block; font-size:18px; color:var(--g900); }
+.sp-low { display:grid; grid-template-columns:1fr 260px; gap:16px; align-items:start; }
+.sp-flow { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; }
+.sp-flow > div { border:1px solid var(--g200); border-radius:14px; padding:12px; font-size:13px; line-height:1.55; background:#fff; }
+.sp-flow b { display:block; color:var(--blue); margin-bottom:4px; } .sp-c1 { color:var(--g800); } .sp-c2 { color:#2f7d5b; margin-top:4px; }
+.sp-map .lg { font-size:12px; color:var(--g600); line-height:1.7; margin-top:6px; } .sp-map .lg i { display:inline-block; width:10px; height:10px; margin-right:4px; vertical-align:-1px; }
+.sp-pr { margin:0; padding-left:18px; font-size:14px; line-height:1.7; }
+.sp-pre { white-space:pre-line; }
+.sp-in { width:100%; font:inherit; color:var(--g900); border:1px solid var(--blue); border-radius:8px; padding:6px 8px; background:#fff; resize:vertical; line-height:1.5; }
+.sp-tok { display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:var(--g50,#F9FAFB); border-radius:12px; padding:10px 12px; font-size:13px; }
+.sp-tok input { flex:1; min-width:220px; height:36px; border:1px solid var(--g300); border-radius:8px; padding:0 10px; font:inherit; }
+@media (max-width: 900px) { .sp-goals, .sp-tracks, .sp-low { grid-template-columns:1fr; } .sp-sum li { font-size:15px; } }
+@media print { .side, .sp-bar, .sp-tok, #lock { display:none !important; } main { padding:0 !important; } .page:not([data-page="splan"]) { display:none !important; } .sp-tr, .sp-goal, .sp-flow > div { break-inside:avoid; } body { background:#fff; } }
 </style>
 </head>
 <body>
@@ -169,9 +199,11 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     </section>
 
     <section class="page" data-page="splan" hidden>
-      <div><p class="eyebrow">사업계획서</p><h1>27년 대학 영업 계획</h1><p class="sub">목표, 2 TRACK 영업, 1차 6개교 선정 근거, 대상 지역, 일정, 원칙을 한 장으로 정리했습니다.</p></div>
-      <div id="sp-act" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-      <div class="card" style="padding:12px"><div id="sp-body" style="overflow-x:auto;-webkit-overflow-scrolling:touch"></div></div>
+      <div><p class="eyebrow">사업계획서</p><h1 id="sp-title">27년 대학 영업 계획</h1><p class="sub" id="sp-meta"></p></div>
+      <div class="sp-bar" id="sp-bar"></div>
+      <div id="sp-tok"></div>
+      <div id="sp-root" style="display:flex;flex-direction:column;gap:16px"><p class="mini">불러오는 중...</p></div>
+      <template id="sp-map-svg"><svg viewBox="0 0 224 387.8" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Malgun Gothic" role="img" aria-label="영업 대상 지역 지도"><path d="M19.6 64.1 L53.2 50.3 L75.6 27.6 L103.6 26.2 L131.6 26.2 L146.2 5.5 L159.6 33.1 L176.4 60.6 L187.6 81.3 L201.6 115.7 L206.1 150.2 L205.5 177.7 L213.9 181.2 L204.4 212.2 L198.8 232.8 L187.6 246.6 L170.8 250 L154 263.8 L131.6 260.4 L114.8 270.7 L98 281 L81.2 284.5 L64.4 294.8 L42 301.7 L30.8 281 L33.6 260.4 L36.4 239.7 L42 212.2 L53.2 191.5 L44.8 170.8 L30.8 143.3 L22.4 126.1 L42 115.7 L56 101.9 L47.6 84.7 L42 74.4 Z" fill="#eef2f6" stroke="#9fb0c2" stroke-width="1"/><ellipse cx="44.8" cy="365.1" rx="20.16" ry="11.709600000000002" fill="#eef2f6" stroke="#9fb0c2"/><circle cx="72.8" cy="222.5" r="16.8" fill="#204d75" fill-opacity=".14" stroke="#204d75" stroke-opacity=".45"/><text x="26.799999999999997" y="226.5" font-size="10.5" fill="#204d75" text-anchor="middle">광주·전라 4</text><circle cx="168" cy="167.4" r="23.400000000000002" fill="#204d75" fill-opacity=".14" stroke="#204d75" stroke-opacity=".45"/><text x="168" y="143.4" font-size="10.5" fill="#204d75" text-anchor="middle">대구·경북 7</text><circle cx="173.6" cy="229.4" r="21.200000000000003" fill="#204d75" fill-opacity=".14" stroke="#204d75" stroke-opacity=".45"/><text x="195.6" y="255.4" font-size="10.5" fill="#204d75" text-anchor="middle">부산·울산·경남 6</text><circle cx="100.8" cy="126.1" r="14.600000000000001" fill="#204d75" fill-opacity=".14" stroke="#204d75" stroke-opacity=".45"/><text x="50.8" y="120.1" font-size="10.5" fill="#204d75" text-anchor="middle">중부·강원 3</text><rect x="54.6" y="256.8" width="14" height="14" rx="3" fill="#2f7d5b"/><text x="61.6" y="267.3" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">6</text><text x="59.6" y="279.8" font-size="10.5" fill="#2f7d5b" font-weight="700" text-anchor="middle">광주·전남</text><rect x="138.6" y="63.900000000000006" width="14" height="14" rx="3" fill="#2f7d5b"/><text x="145.6" y="74.4" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">4</text><text x="167.6" y="64.9" font-size="10.5" fill="#2f7d5b" font-weight="700" text-anchor="middle">강원</text><rect x="60.2" y="77.7" width="14" height="14" rx="3" fill="#2f7d5b"/><text x="67.2" y="88.2" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">4</text><text x="37.2" y="76.7" font-size="10.5" fill="#2f7d5b" font-weight="700" text-anchor="middle">수도권</text><circle cx="169.7" cy="192.9" r="3.6" fill="#c0392b" stroke="#fff" stroke-width="1"/><text x="174.7" y="195.9" font-size="11" font-weight="700" fill="#243249" text-anchor="start">대구대</text><circle cx="156.8" cy="194.2" r="3.6" fill="#c0392b" stroke="#fff" stroke-width="1"/><text x="151.8" y="197.2" font-size="11" font-weight="700" fill="#243249" text-anchor="end">영남이공</text><circle cx="77.3" cy="197" r="3.6" fill="#c0392b" stroke="#fff" stroke-width="1"/><text x="72.3" y="200" font-size="11" font-weight="700" fill="#243249" text-anchor="end">전주대</text><circle cx="66.1" cy="240.4" r="3.6" fill="#c0392b" stroke="#fff" stroke-width="1"/><text x="60.099999999999994" y="243.4" font-size="11" font-weight="700" fill="#243249" text-anchor="end">광주대</text><circle cx="93.5" cy="160.5" r="3.6" fill="#c0392b" stroke="#fff" stroke-width="1"/><text x="98.5" y="163.5" font-size="11" font-weight="700" fill="#243249" text-anchor="start">한남대</text><circle cx="121.5" cy="92.3" r="3.6" fill="#c0392b" stroke="#fff" stroke-width="1"/><text x="126.5" y="95.3" font-size="11" font-weight="700" fill="#243249" text-anchor="start">한라대</text><circle cx="68.9" cy="245.2" r="7" fill="none" stroke="#e08a00" stroke-width="2"/><text x="78.9" y="257.2" font-size="10.5" fill="#b36b00" font-weight="700">조선이공대</text></svg></template>
     </section>
     <section class="page" data-page="bids" hidden>
       <div><p class="eyebrow">신규사업 공고</p><h1>이번에 볼 만한 공고</h1><p class="sub" id="bid-sub">나라장터·교육부 등에서 월·수·금 오전에 모은 공고입니다.</p></div>
@@ -232,12 +264,98 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2610271607').then(r => r.json());
-  const tryOpen = async pw => { B = await unlock(pw, await lockedP); try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); };
+  const lockedP = fetch('data/locked.json?v=2610271633').then(r => r.json());
+  let PW = '';
+  const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
     e.preventDefault(); const btn = document.getElementById('lockBtn'), err = document.getElementById('lockErr'); btn.disabled = true; err.textContent = '';
     try { await tryOpen(document.getElementById('lockPw').value); } catch { err.textContent = '비밀번호가 맞지 않아요.'; btn.disabled = false; }
   });
+
+  // 사업계획서: plan/plan.lock.json(같은 비밀번호로 암호화)을 풀어 보여 주고, 고치면 다시 잠가 GitHub에 바로 저장한다
+  const SP = { d: null, edit: false, busy: false, msg: '' };
+  const GH = (() => { const o = location.hostname.endsWith('.github.io') ? location.hostname.split('.')[0] : 'joojoo1'; const r = location.hostname.endsWith('.github.io') ? (location.pathname.split('/')[1] || 'team-status') : 'team-status'; return { o, r, path: 'plan/plan.lock.json' }; })();
+  const ls = { get: k => { try { return localStorage.getItem(k) || ''; } catch { return ''; } }, set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} } };
+  const seal = async obj => {
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12)), iter = 310000;
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(PW), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt']);
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(obj))));
+    const b = u => { let s = ''; for (let i = 0; i < u.length; i += 8192) s += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(s); };
+    return JSON.stringify({ v: 1, iter, salt: b(salt), iv: b(iv), ct: b(ct) });
+  };
+  const pget = p => p.split('.').reduce((o, k) => o == null ? o : o[k], SP.d);
+  const pset = (p, v) => { const ks = p.split('.'), last = ks.pop(); const o = ks.reduce((o, k) => o[k], SP.d); o[last] = v; };
+  const F = (p, tag, cls, list) => {   // 보기: 글자, 수정: 입력칸
+    if (SP.edit) { const t = el('textarea', 'sp-in'); t.dataset.p = p; if (list) t.dataset.list = '1'; const v = pget(p); t.value = list ? (v || []).join('\n') : (v || ''); t.rows = Math.max(1, t.value.split('\n').length); t.addEventListener('input', () => { t.rows = Math.max(1, t.value.split('\n').length); }); return t; }
+    return el(tag, ((cls || '') + ' sp-pre').trim(), pget(p) || '');
+  };
+  const spBar = () => {
+    const bar = document.getElementById('sp-bar'); bar.textContent = '';
+    const B_ = (label, cls, fn) => { const b = el('button', 'btn' + (cls ? ' ' + cls : ''), label); b.type = 'button'; b.disabled = SP.busy; b.addEventListener('click', fn); bar.appendChild(b); return b; };
+    if (!SP.d) return;
+    if (SP.edit) { B_(SP.busy ? '저장 중...' : '저장', '', spSave); B_('취소', 'ghost', () => { SP.edit = false; SP.msg = ''; spLoad(); }); }
+    else { B_('수정', '', () => { SP.edit = true; SP.msg = ''; spRender(); }); B_('PDF로 저장·인쇄', 'ghost', () => window.print()); }
+    if (SP.msg) bar.appendChild(el('span', 'sp-msg', SP.msg));
+    const tk = document.getElementById('sp-tok'); tk.textContent = '';
+    if (SP.edit) {
+      const box = el('div', 'sp-tok');
+      if (ls.get('tsGhToken')) { box.appendChild(el('span', '', '저장용 GitHub 토큰이 이 브라우저에 있어요.')); const x = el('button', 'btn ghost', '토큰 지우기'); x.type = 'button'; x.addEventListener('click', () => { ls.set('tsGhToken', ''); spBar(); }); box.appendChild(x); }
+      else { box.appendChild(el('span', '', '저장하려면 이 브라우저에 GitHub 토큰을 한 번 넣어 주세요 (team-status 저장소 Contents 쓰기 권한).')); const i = el('input'); i.type = 'password'; i.placeholder = 'github_pat_...'; i.autocomplete = 'off'; box.appendChild(i); const ok = el('button', 'btn ghost', '넣기'); ok.type = 'button'; ok.addEventListener('click', () => { if (i.value.trim()) { ls.set('tsGhToken', i.value.trim()); spBar(); } }); box.appendChild(ok); }
+      tk.appendChild(box);
+    }
+  };
+  const spRender = () => {
+    const root = document.getElementById('sp-root'); root.textContent = ''; const d = SP.d;
+    set('sp-title', d.title || '27년 대학 영업 계획');
+    set('sp-meta', `${d.author || ''} · ${d.team || ''} · 최종 수정 ${d.updated || ''}`);
+    // 3줄 요약
+    const sum = el('div', 'sp-sum'); sum.appendChild(el('p', 't', '전략과 계획 3줄 요약')); const ol = el('ol');
+    (d.summary || []).forEach((_, i) => { const li = el('li'); li.appendChild(F('summary.' + i, 'span')); ol.appendChild(li); }); sum.appendChild(ol); root.appendChild(sum);
+    // 목표
+    const gs = el('div', 'sp-goals'); (d.goals || []).forEach((_, i) => { const c = el('div', 'sp-goal'); c.appendChild(F(`goals.${i}.label`, 'div', 'k')); c.appendChild(F(`goals.${i}.value`, 'div', 'v')); c.appendChild(F(`goals.${i}.note`, 'div', 'n')); gs.appendChild(c); }); root.appendChild(gs);
+    // TRACK 1·2
+    const ts = el('div', 'sp-tracks'); (d.tracks || []).forEach((t, i) => {
+      const c = el('div', 'sp-tr' + (i ? ' t2' : '')); const hh = el('h3'); hh.appendChild(F(`tracks.${i}.name`, 'span')); c.appendChild(hh);
+      (t.rows || []).forEach((_, j) => { const r = el('div', 'sp-row'); r.appendChild(F(`tracks.${i}.rows.${j}.k`, 'div', 'k')); r.appendChild(F(`tracks.${i}.rows.${j}.v`, 'div')); c.appendChild(r); });
+      const k = el('div', 'sp-kpi'); (t.kpi || []).forEach((_, j) => { const b = el('div'); const n = F(`tracks.${i}.kpi.${j}.n`, 'b'); b.appendChild(n); b.appendChild(F(`tracks.${i}.kpi.${j}.label`, 'span')); k.appendChild(b); }); c.appendChild(k);
+      ts.appendChild(c); }); root.appendChild(ts);
+    // 일정 + 지도
+    const low = el('div', 'sp-low'); const sc = el('div', 'card'); sc.appendChild(el('h3', '', '일정')); const fl = el('div', 'sp-flow');
+    (d.schedule || []).forEach((_, i) => { const b = el('div'); b.appendChild(F(`schedule.${i}.when`, 'b')); b.appendChild(F(`schedule.${i}.t1`, 'div', 'sp-c1')); b.appendChild(F(`schedule.${i}.t2`, 'div', 'sp-c2')); fl.appendChild(b); });
+    sc.appendChild(fl); const lg0 = el('p', 'mini', '검은 글씨 TRACK 1 · 초록 글씨 TRACK 2'); lg0.style.marginTop = '8px'; sc.appendChild(lg0);
+    const pr = el('div'); pr.style.marginTop = '14px'; pr.appendChild(el('h3', '', '원칙'));
+    if (SP.edit) pr.appendChild(F('principles', 'div', '', true)); else { const ul = el('ul', 'sp-pr'); (d.principles || []).forEach(t => ul.appendChild(el('li', '', t))); pr.appendChild(ul); }
+    sc.appendChild(pr); low.appendChild(sc);
+    const mp = el('div', 'card sp-map'); mp.appendChild(el('h3', '', '대상 지역')); mp.appendChild(document.getElementById('sp-map-svg').content.cloneNode(true));
+    const lg = el('div', 'lg'); lg.innerHTML = '<i style="background:#c0392b;border-radius:50%"></i>TRACK 1 1차 6개교<br><i style="background:#d3dde7;border:1px solid #8aa1b8;border-radius:50%"></i>TRACK 1 권역별 대학 수 (20개교)<br><i style="background:#2f7d5b;border-radius:2px"></i>TRACK 2 대상 대학 수 (14개교)<br><i style="border:2px solid #e08a00;border-radius:50%;width:8px;height:8px"></i>레퍼런스 조선이공대';
+    mp.appendChild(lg); low.appendChild(mp); root.appendChild(low);
+    spBar();
+  };
+  async function spLoad() {
+    const root = document.getElementById('sp-root');
+    try { const r = await fetch(GH.path + '?t=' + Date.now(), { cache: 'no-store' }); SP.d = await unlock(PW, await r.json()); spRender(); }
+    catch { root.textContent = ''; root.appendChild(el('p', 'mini', '사업계획서를 불러오지 못했습니다.')); }
+  }
+  async function spSave() {
+    const token = ls.get('tsGhToken'); if (!token) { SP.msg = '먼저 아래 칸에 GitHub 토큰을 넣어 주세요.'; spBar(); return; }
+    document.querySelectorAll('#sp-root [data-p]').forEach(t => pset(t.dataset.p, t.dataset.list ? t.value.split('\n').map(s => s.trim()).filter(Boolean) : t.value.trim()));
+    const n = new Date(); SP.d.updated = `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`;
+    SP.busy = true; SP.msg = ''; spBar();
+    try {
+      const api = `https://api.github.com/repos/${GH.o}/${GH.r}/contents/${GH.path}`, hd = { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' };
+      const cur = await fetch(api + '?ref=main', { headers: hd, cache: 'no-store' });
+      if (cur.status === 401) { ls.set('tsGhToken', ''); throw new Error('토큰이 맞지 않아요. 다시 넣어 주세요.'); }
+      const sha = cur.ok ? (await cur.json()).sha : undefined;
+      const body = { message: `사업계획서 수정 ${SP.d.updated} ${String(n.getHours()).padStart(2, '0')}:${String(n.getMinutes()).padStart(2, '0')}`, content: btoa(await seal(SP.d)), branch: 'main' }; if (sha) body.sha = sha;
+      const put = await fetch(api, { method: 'PUT', headers: hd, body: JSON.stringify(body) });
+      if (put.status === 401 || put.status === 403) throw new Error('이 토큰으로는 저장할 수 없어요. 저장소 Contents 쓰기 권한을 확인해 주세요.');
+      if (put.status === 409) throw new Error('다른 곳에서 먼저 저장했어요. 취소 후 다시 고쳐 주세요.');
+      if (!put.ok) throw new Error('저장하지 못했어요 (' + put.status + ').');
+      SP.edit = false; SP.msg = '저장했어요. 공개 주소에는 1분쯤 뒤 반영돼요.';
+    } catch (e) { SP.msg = e.message || '저장하지 못했어요.'; }
+    SP.busy = false; spRender();
+  }
 
   const render = () => Promise.all(['meta', 'projects', 'sales', 'sales_kpi', 'weeks', 'strategy', 'bids', 'plans', 'plan_refs'].map(load)).then(([meta, projects, sales, kpi, weeks, strategy, bids, plans, refs]) => {
     // 홈
@@ -319,19 +437,6 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     const rb = document.getElementById('report');
     if (g && g.report_url && furl(g.report_url)) { const a = el('a', 'btn'); a.href = furl(g.report_url); a.download = '27년대학영업_주간보고.pdf'; a.target = '_blank'; a.rel = 'noopener'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode('주간보고 PDF 보기')); rb.appendChild(a); if (g.report_at) { const p = el('p', 'mini', '작성 ' + String(g.report_at).replace('T', ' ').slice(0, 16)); p.style.marginTop = '8px'; rb.appendChild(p); } }
     else rb.appendChild(el('p', 'mini', '아직 올라간 주간보고가 없습니다.'));
-    // 사업계획서 페이지
-    const sa = document.getElementById('sp-act'), sbd = document.getElementById('sp-body');
-    if (g && g.plan_url && furl(g.plan_url)) {
-      const pa = el('a', 'btn'); pa.href = furl(g.plan_url); pa.download = g.plan_file || '27년 대학 영업 계획.pdf'; pa.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; pa.appendChild(document.createTextNode('PDF 다운로드')); sa.appendChild(pa);
-      const html = B.files['sales-plan.html'];
-      if (html) {
-        const fr = el('iframe'); fr.title = '27년 대학 영업 계획'; fr.style.cssText = 'display:block;width:100%;min-width:1100px;height:820px;border:0';
-        fr.srcdoc = new TextDecoder().decode(Uint8Array.from(atob(html.b64), c => c.charCodeAt(0)));
-        const fit = () => { try { const n = fr.contentDocument.documentElement.scrollHeight; if (n > 100) fr.style.height = (n + 8) + 'px'; } catch {} };   // 숨겨진 상태에서는 높이가 0이라 페이지를 열 때 다시 맞춘다
-        fr.addEventListener('load', fit); document.querySelectorAll('[data-go=splan],[data-jump=splan]').forEach(b => b.addEventListener('click', () => setTimeout(fit, 50)));
-        sbd.appendChild(fr);
-      } else if (g.plan_img && furl(g.plan_img)) { const im = el('img'); im.src = furl(g.plan_img); im.alt = '27년 대학 영업 계획'; im.style.cssText = 'width:100%;height:auto;display:block'; sbd.appendChild(im); }
-    } else sbd.appendChild(el('p', 'mini', '아직 올라간 사업계획서가 없습니다.'));
     const kb = document.getElementById('kpis');
     kpi.forEach(r => {
       const v = Number(r.value), t = Number(r.target), pct = Math.min(100, Math.round(v / Math.max(t, 1) * 100));
