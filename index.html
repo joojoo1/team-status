@@ -134,6 +134,41 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 .sp-gi { background:#F3FAF6; border-radius:14px; padding:14px; font-size:13px; line-height:1.55; display:flex; flex-direction:column; gap:4px; }
 .sp-gi .nm { font-size:15px; font-weight:700; color:#2f7d5b; } .sp-gi .bd { font-size:18px; font-weight:700; color:var(--g900); } .sp-gi .sc { color:var(--g600); }
 .sp-gi .of { margin-top:4px; padding-top:6px; border-top:1px solid #d6ebe0; color:var(--g800); } .sp-gi .of b { color:#2f7d5b; }
+.vz-hero { background:linear-gradient(135deg,#1B64DA,#3182F6); color:#fff; border-radius:22px; padding:22px 26px; display:grid; grid-template-columns:1fr 300px; gap:24px; align-items:center; }
+.vz-hero .t { font-size:13px; font-weight:700; opacity:.8; } .vz-hero .hl { font-size:21px; font-weight:700; line-height:1.45; margin-top:6px; letter-spacing:-0.02em; }
+.vz-goal .n { font-size:13px; opacity:.85; } .vz-goal .big { font-size:38px; font-weight:800; line-height:1.1; letter-spacing:-0.03em; }
+.vz-stack { display:flex; height:30px; border-radius:9px; overflow:hidden; margin-top:10px; background:rgba(255,255,255,.2); }
+.vz-stack i { display:flex; align-items:center; justify-content:center; font-style:normal; font-size:12.5px; font-weight:700; white-space:nowrap; }
+.vz-stack .a { background:rgba(255,255,255,.35); } .vz-stack .b { background:#fff; color:#1B64DA; }
+.vz-lg { display:flex; justify-content:space-between; gap:8px; font-size:12px; opacity:.9; margin-top:6px; }
+.vz-tracks { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.vz-tr { background:#fff; border-radius:20px; padding:18px 20px; border-top:5px solid var(--blue); display:flex; flex-direction:column; gap:12px; }
+.vz-tr.t2 { border-top-color:#2f7d5b; }
+.vz-tr .hd { display:flex; align-items:baseline; gap:8px; } .vz-tr .no { font-size:13px; font-weight:800; color:var(--blue); } .vz-tr.t2 .no { color:#2f7d5b; }
+.vz-tr .tag { background:none; padding:0; font-size:21px; font-weight:800; color:var(--g900); min-height:0; }
+.vz-facts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.vz-facts div { background:var(--g50); border-radius:12px; padding:10px 12px; font-size:14px; font-weight:600; line-height:1.4; }
+.vz-facts small { display:block; font-size:11.5px; font-weight:700; color:var(--g500); margin-bottom:3px; }
+.vz-fun { display:flex; flex-direction:column; gap:4px; }
+.vz-fun .r { display:grid; grid-template-columns:1fr 34px; gap:8px; align-items:center; font-size:12.5px; }
+.vz-fun .r span { display:block; height:22px; line-height:22px; border-radius:6px; background:var(--blue-50); color:var(--g800); padding-left:8px; white-space:nowrap; overflow:visible; }
+.vz-tr.t2 .vz-fun .r span { background:#E3F3EA; } .vz-fun .r b { text-align:right; font-size:15px; }
+.vz-mid { display:grid; grid-template-columns:1fr 300px; gap:16px; align-items:stretch; }
+.vz-gov .r { display:grid; grid-template-columns:150px 1fr; gap:12px; align-items:center; padding:9px 0; border-top:1px solid var(--g100); }
+.vz-gov .r:first-of-type { border-top:none; }
+.vz-gov .nm { font-size:14.5px; font-weight:700; } .vz-gov .bd { font-size:12px; color:var(--g500); }
+.vz-gov .bg { height:12px; border-radius:6px; background:var(--g100); overflow:hidden; } .vz-gov .bg i { display:block; height:100%; background:#2f7d5b; border-radius:6px; }
+.vz-gov .role { font-size:13px; color:#2f7d5b; font-weight:600; margin-top:4px; }
+.vz-steps { display:grid; grid-template-columns:repeat(5,1fr); gap:0; position:relative; }
+.vz-steps > div { position:relative; padding:28px 8px 0; text-align:center; }
+.vz-steps > div::before { content:''; position:absolute; top:9px; left:0; right:0; height:3px; background:var(--g200); }
+.vz-steps > div:first-child::before { left:50%; } .vz-steps > div:last-child::before { right:50%; }
+.vz-steps > div::after { content:''; position:absolute; top:3px; left:50%; width:15px; height:15px; margin-left:-7.5px; border-radius:50%; background:#fff; border:3px solid var(--blue); }
+.vz-steps > div.now::after { background:var(--blue); }
+.vz-steps b { display:block; font-size:14px; } .vz-steps span { display:block; font-size:12.5px; color:var(--g600); margin-top:2px; line-height:1.4; }
+.vz-div { display:flex; align-items:center; gap:12px; margin-top:18px; font-size:15px; font-weight:700; color:var(--g600); }
+.vz-div::after { content:''; flex:1; height:1px; background:var(--g300); }
+@media (max-width: 900px) { .vz-hero, .vz-tracks, .vz-mid { grid-template-columns:1fr; } .vz-steps { grid-template-columns:1fr; } .vz-steps > div { text-align:left; padding:6px 0 6px 30px; } .vz-steps > div::before { top:0; bottom:0; left:9px; right:auto; width:3px; height:auto; } .vz-steps > div:first-child::before { left:9px; top:50%; } .vz-steps > div:last-child::before { right:auto; bottom:50%; } .vz-steps > div::after { top:50%; left:9px; margin-top:-7.5px; } .vz-facts { grid-template-columns:1fr; } .vz-gov .r { grid-template-columns:1fr; gap:4px; } }
 @media (max-width: 1100px) { .sp-gov-g { grid-template-columns:1fr 1fr; } }
 @media (max-width: 600px) { .sp-gov-g { grid-template-columns:1fr; } }
 @media (max-width: 900px) { .sp-goals, .sp-tracks, .sp-low { grid-template-columns:1fr; } .sp-sum li { font-size:15px; } }
@@ -273,7 +308,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2610280933').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2610281205').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -283,6 +318,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 
   // 사업계획서: plan/plan.lock.json(같은 비밀번호로 암호화)을 풀어 보여 주고, 고치면 다시 잠가 GitHub에 바로 저장한다
   const SP = { d: null, edit: false, busy: false, msg: '' };
+  const VIS0 = {"headline":"2027년 정부 신규·확대 사업을 겨냥한 2 TRACK 영업으로 신규 대학 2.5억 원 확보","goal":{"total":"7.5억 원","base":"5","baseLabel":"기존 대학 5억","add":"2.5","addLabel":"신규 대학 2.5억 (2 TRACK)"},"tracks":[{"tag":"운영 공급","who":"사업단 보유 지방대 20개교","how":"1개 과정·콘텐츠 1모듈부터","first":"1차 6개교, 11/4 발송"},{"tag":"사업 공동기획","who":"신규 공모 준비 14개교","how":"공모 계획서·교과 공동 설계","first":"동강대·송곡대, 11/6 접촉"}],"gov":[{"amt":"2070","role":"X+AI 과정 설계·강사·콘텐츠"},{"amt":"3999","role":"조선이공대 사례로 신규 공모 공동 신청"},{"amt":"1400","role":"기업 과제 발굴·PBL 운영"},{"amt":"12000","role":"지역 과제 교육 운영 위탁"}],"steps":[{"when":"11월","t":"1차 접촉"},{"when":"12월","t":"사전 미팅, 유효 기회 2건"},{"when":"27년 1분기","t":"공고 대응·계약·개강"},{"when":"27년 2분기","t":"신규 1개교 개설, 과정 추가"},{"when":"27년 하반기","t":"성과 공유, 2028 재계약"}]};
   const GH = (() => { const o = location.hostname.endsWith('.github.io') ? location.hostname.split('.')[0] : 'joojoo1'; const r = location.hostname.endsWith('.github.io') ? (location.pathname.split('/')[1] || 'team-status') : 'team-status'; return { o, r, path: 'plan/plan.lock.json' }; })();
   const ls = { get: k => { try { return localStorage.getItem(k) || ''; } catch { return ''; } }, set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} } };
   const seal = async obj => {
@@ -318,18 +354,49 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     const root = document.getElementById('sp-root'); root.textContent = ''; const d = SP.d;
     set('sp-title', d.title || '27년 대학 영업 계획');
     set('sp-meta', `${d.author || ''} · ${d.team || ''} · 최종 수정 ${d.updated || ''}`);
-    // 3줄 요약
+    // 한눈에 보기 (짧은 문구·도식). 값은 d.visual, 없으면 기본값으로 채운다
+    if (!d.visual) d.visual = JSON.parse(JSON.stringify(VIS0));
+    const v = d.visual; v.goal = v.goal || {}; v.tracks = v.tracks || []; v.gov = v.gov || []; v.steps = v.steps || [];
+    const hero = el('div', 'vz-hero'); const hl = el('div'); hl.appendChild(el('p', 't', '한눈에 보기')); hl.appendChild(F('visual.headline', 'div', 'hl')); hero.appendChild(hl);
+    const gl = el('div', 'vz-goal'); gl.appendChild(el('div', 'n', '2027년 매출 목표')); gl.appendChild(F('visual.goal.total', 'div', 'big'));
+    if (SP.edit) ['base', 'baseLabel', 'add', 'addLabel'].forEach(k => gl.appendChild(F('visual.goal.' + k, 'div')));
+    else {
+      const a = parseFloat(v.goal.base) || 0, b = parseFloat(v.goal.add) || 0, tot = (a + b) || 1, st = el('div', 'vz-stack');
+      const ia = el('i', 'a', v.goal.base + '억'); ia.style.width = a / tot * 100 + '%'; const ib = el('i', 'b', v.goal.add + '억'); ib.style.width = b / tot * 100 + '%'; st.appendChild(ia); st.appendChild(ib); gl.appendChild(st);
+      const lgd = el('div', 'vz-lg'); lgd.appendChild(el('span', '', v.goal.baseLabel || '')); lgd.appendChild(el('span', '', v.goal.addLabel || '')); gl.appendChild(lgd);
+    }
+    hero.appendChild(gl); root.appendChild(hero);
+    // TRACK 카드: 대상·방식·시작 + 목표 깔때기
+    const vt = el('div', 'vz-tracks'); (d.tracks || []).forEach((t, i) => { v.tracks[i] = v.tracks[i] || {};
+      const c = el('div', 'vz-tr' + (i ? ' t2' : '')); const hd = el('div', 'hd'); hd.appendChild(el('span', 'no', 'TRACK ' + (i + 1))); hd.appendChild(F(`visual.tracks.${i}.tag`, 'span', 'tag')); c.appendChild(hd);
+      const fx = el('div', 'vz-facts'); [['who', '대상'], ['how', '방식'], ['first', '시작']].forEach(([k, lb]) => { const x = el('div'); x.appendChild(el('small', '', lb)); x.appendChild(F(`visual.tracks.${i}.${k}`, 'span')); fx.appendChild(x); }); c.appendChild(fx);
+      if (!SP.edit) { const fn = el('div', 'vz-fun'), mx = Math.max(1, ...(t.kpi || []).map(k => parseFloat(k.n) || 0));
+        (t.kpi || []).forEach(k => { const r = el('div', 'r'), s = el('span', '', k.label); s.style.width = Math.max(34, (parseFloat(k.n) || 0) / mx * 100) + '%'; r.appendChild(s); r.appendChild(el('b', '', k.n)); fn.appendChild(r); }); c.appendChild(fn); }
+      vt.appendChild(c); }); root.appendChild(vt);
+    // 2027 정부 사업 막대 + 지도
+    const mid = el('div', 'vz-mid'), gc = el('div', 'card vz-gov'); gc.appendChild(el('h3', '', '2027 정부 사업 (TRACK 2 공략)')); gc.appendChild(el('p', 'desc', '교육부 2027년 예산안 기준, 막대는 예산 규모'));
+    const gi = (d.gov && d.gov.items) || [], gmx = Math.max(1, ...gi.map((_, i) => parseFloat((v.gov[i] || {}).amt) || 0));
+    gi.forEach((it, i) => { v.gov[i] = v.gov[i] || {}; const r = el('div', 'r'), lft = el('div'); lft.appendChild(el('div', 'nm', it.name)); lft.appendChild(el('div', 'bd', it.budget)); r.appendChild(lft);
+      const rt = el('div'); if (SP.edit) rt.appendChild(F(`visual.gov.${i}.amt`, 'div')); else { const bg = el('div', 'bg'), ii = el('i'); ii.style.width = Math.max(4, (parseFloat(v.gov[i].amt) || 0) / gmx * 100) + '%'; bg.appendChild(ii); rt.appendChild(bg); }
+      rt.appendChild(F(`visual.gov.${i}.role`, 'div', 'role')); r.appendChild(rt); gc.appendChild(r); });
+    mid.appendChild(gc);
+    const mp = el('div', 'card sp-map'); mp.appendChild(el('h3', '', '대상 지역')); mp.appendChild(document.getElementById('sp-map-svg').content.cloneNode(true));
+    const lg = el('div', 'lg'); lg.innerHTML = '<i style="background:#c0392b;border-radius:50%"></i>TRACK 1 1차 6개교<br><i style="background:#d3dde7;border:1px solid #8aa1b8;border-radius:50%"></i>TRACK 1 권역별 대학 수 (20개교)<br><i style="background:#2f7d5b;border-radius:2px"></i>TRACK 2 대상 대학 수 (14개교)<br><i style="border:2px solid #e08a00;border-radius:50%;width:8px;height:8px"></i>레퍼런스 조선이공대';
+    mp.appendChild(lg); mid.appendChild(mp); root.appendChild(mid);
+    // 일정 단계
+    const sp0 = el('div', 'card'); sp0.appendChild(el('h3', '', '일정')); const stp = el('div', 'vz-steps'); stp.style.marginTop = '12px';
+    v.steps.forEach((_, i) => { const s = el('div'); s.appendChild(F(`visual.steps.${i}.when`, 'b')); s.appendChild(F(`visual.steps.${i}.t`, 'span')); stp.appendChild(s); }); sp0.appendChild(stp); root.appendChild(sp0);
+
+    // 상세 자료 (글)
+    root.appendChild(el('div', 'vz-div', '상세 자료'));
     const sum = el('div', 'sp-sum'); sum.appendChild(el('p', 't', '전략과 계획 3줄 요약')); const ol = el('ol');
     (d.summary || []).forEach((_, i) => { const li = el('li'); li.appendChild(F('summary.' + i, 'span')); ol.appendChild(li); }); sum.appendChild(ol); root.appendChild(sum);
-    // 목표
     const gs = el('div', 'sp-goals'); (d.goals || []).forEach((_, i) => { const c = el('div', 'sp-goal'); c.appendChild(F(`goals.${i}.label`, 'div', 'k')); c.appendChild(F(`goals.${i}.value`, 'div', 'v')); c.appendChild(F(`goals.${i}.note`, 'div', 'n')); gs.appendChild(c); }); root.appendChild(gs);
-    // TRACK 1·2
     const ts = el('div', 'sp-tracks'); (d.tracks || []).forEach((t, i) => {
       const c = el('div', 'sp-tr' + (i ? ' t2' : '')); const hh = el('h3'); hh.appendChild(F(`tracks.${i}.name`, 'span')); c.appendChild(hh);
       (t.rows || []).forEach((_, j) => { const r = el('div', 'sp-row'); r.appendChild(F(`tracks.${i}.rows.${j}.k`, 'div', 'k')); r.appendChild(F(`tracks.${i}.rows.${j}.v`, 'div')); c.appendChild(r); });
-      const k = el('div', 'sp-kpi'); (t.kpi || []).forEach((_, j) => { const b = el('div'); const n = F(`tracks.${i}.kpi.${j}.n`, 'b'); b.appendChild(n); b.appendChild(F(`tracks.${i}.kpi.${j}.label`, 'span')); k.appendChild(b); }); c.appendChild(k);
+      if (SP.edit) { const k = el('div', 'sp-kpi'); (t.kpi || []).forEach((_, j) => { const b = el('div'); b.appendChild(F(`tracks.${i}.kpi.${j}.n`, 'b')); b.appendChild(F(`tracks.${i}.kpi.${j}.label`, 'span')); k.appendChild(b); }); c.appendChild(k); }
       ts.appendChild(c); }); root.appendChild(ts);
-    // TRACK 2 · 2027 정부 사업
     if (d.gov && (d.gov.items || []).length) {
       const gv = el('div', 'sp-gov'); const gh = el('h3'); gh.appendChild(F('gov.title', 'span')); gv.appendChild(gh); gv.appendChild(F('gov.note', 'p', 'note'));
       const gg = el('div', 'sp-gov-g');
@@ -338,16 +405,12 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
         const of = el('div', 'of'); of.appendChild(el('b', '', '우리 제안 ')); of.appendChild(F(q('offer'), 'span')); b.appendChild(of); gg.appendChild(b); });
       gv.appendChild(gg); root.appendChild(gv);
     }
-    // 일정 + 지도
-    const low = el('div', 'sp-low'); const sc = el('div', 'card'); sc.appendChild(el('h3', '', '일정')); const fl = el('div', 'sp-flow');
+    const sc = el('div', 'card'); sc.appendChild(el('h3', '', '단계별 할 일')); const fl = el('div', 'sp-flow'); fl.style.marginTop = '10px';
     (d.schedule || []).forEach((_, i) => { const b = el('div'); b.appendChild(F(`schedule.${i}.when`, 'b')); b.appendChild(F(`schedule.${i}.t1`, 'div', 'sp-c1')); b.appendChild(F(`schedule.${i}.t2`, 'div', 'sp-c2')); fl.appendChild(b); });
     sc.appendChild(fl); const lg0 = el('p', 'mini', '검은 글씨 TRACK 1 · 초록 글씨 TRACK 2'); lg0.style.marginTop = '8px'; sc.appendChild(lg0);
     const pr = el('div'); pr.style.marginTop = '14px'; pr.appendChild(el('h3', '', '원칙'));
     if (SP.edit) pr.appendChild(F('principles', 'div', '', true)); else { const ul = el('ul', 'sp-pr'); (d.principles || []).forEach(t => ul.appendChild(el('li', '', t))); pr.appendChild(ul); }
-    sc.appendChild(pr); low.appendChild(sc);
-    const mp = el('div', 'card sp-map'); mp.appendChild(el('h3', '', '대상 지역')); mp.appendChild(document.getElementById('sp-map-svg').content.cloneNode(true));
-    const lg = el('div', 'lg'); lg.innerHTML = '<i style="background:#c0392b;border-radius:50%"></i>TRACK 1 1차 6개교<br><i style="background:#d3dde7;border:1px solid #8aa1b8;border-radius:50%"></i>TRACK 1 권역별 대학 수 (20개교)<br><i style="background:#2f7d5b;border-radius:2px"></i>TRACK 2 대상 대학 수 (14개교)<br><i style="border:2px solid #e08a00;border-radius:50%;width:8px;height:8px"></i>레퍼런스 조선이공대';
-    mp.appendChild(lg); low.appendChild(mp); root.appendChild(low);
+    sc.appendChild(pr); root.appendChild(sc);
     spBar();
   };
   async function spLoad() {
