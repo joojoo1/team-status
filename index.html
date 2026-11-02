@@ -308,7 +308,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2610281208').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611021052').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -318,7 +318,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 
   // 사업계획서: plan/plan.lock.json(같은 비밀번호로 암호화)을 풀어 보여 주고, 고치면 다시 잠가 GitHub에 바로 저장한다
   const SP = { d: null, edit: false, busy: false, msg: '' };
-  const VIS0 = {"headline":"2027년 정부 신규·확대 사업을 겨냥한 2 TRACK 영업으로 신규 대학 2.5억 원 확보","goal":{"total":"7.5억 원","base":"5","baseLabel":"기존 대학 5억","add":"2.5","addLabel":"신규 대학 2.5억 (2 TRACK)"},"tracks":[{"tag":"운영 공급","who":"사업단 보유 지방대 20개교","how":"1개 과정·콘텐츠 1모듈부터","first":"1차 6개교, 11/4 발송"},{"tag":"사업 공동기획","who":"신규 공모 준비 14개교","how":"공모 계획서·교과 공동 설계","first":"동강대·송곡대, 11/6 접촉"}],"gov":[{"amt":"2070","role":"X+AI 과정 설계·강사·콘텐츠"},{"amt":"3999","role":"조선이공대 사례로 신규 공모 공동 신청"},{"amt":"1400","role":"기업 과제 발굴·PBL 운영"},{"amt":"12000","role":"지역 과제 교육 운영 위탁"}],"steps":[{"when":"11월","t":"1차 접촉"},{"when":"12월","t":"사전 미팅, 유효 기회 2건"},{"when":"27년 1분기","t":"공고 대응·계약·개강"},{"when":"27년 2분기","t":"신규 1개교 개설, 과정 추가"},{"when":"27년 하반기","t":"성과 공유, 2028 재계약"}]};
+  const VIS0 = {"headline":"2027년 정부 신규·확대 사업을 겨냥한 2 TRACK 영업으로 신규 대학 2.5억 원 확보","goal":{"total":"7.5억 원","base":"5","baseLabel":"기존 대학 5억","add":"2.5","addLabel":"신규 대학 2.5억 (2 TRACK)"},"tracks":[{"tag":"운영 공급","who":"사업단 보유 지방대 20개교","how":"1개 과정·콘텐츠 1모듈부터","first":"1차 6개교, 11/16 발송"},{"tag":"사업 공동기획","who":"신규 공모 준비 14개교","how":"공모 계획서·교과 공동 설계","first":"동강대·송곡대, 11/20 접촉"}],"gov":[{"amt":"2070","role":"X+AI 과정 설계·강사·콘텐츠"},{"amt":"3999","role":"조선이공대 사례로 신규 공모 공동 신청"},{"amt":"1400","role":"기업 과제 발굴·PBL 운영"},{"amt":"12000","role":"지역 과제 교육 운영 위탁"}],"steps":[{"when":"11/16~","t":"1차 접촉"},{"when":"12월","t":"사전 미팅, 유효 기회 2건"},{"when":"27년 1분기","t":"공고 대응·계약·개강"},{"when":"27년 2분기","t":"신규 1개교 개설, 과정 추가"},{"when":"27년 하반기","t":"성과 공유, 2028 재계약"}]};
   const GH = (() => { const o = location.hostname.endsWith('.github.io') ? location.hostname.split('.')[0] : 'joojoo1'; const r = location.hostname.endsWith('.github.io') ? (location.pathname.split('/')[1] || 'team-status') : 'team-status'; return { o, r, path: 'plan/plan.lock.json' }; })();
   const ls = { get: k => { try { return localStorage.getItem(k) || ''; } catch { return ''; } }, set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} } };
   const seal = async obj => {
@@ -543,7 +543,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       const bar = el('div', 'bar'); const fl = el('i'); fl.style.width = pct + '%'; if (pct >= 100) fl.style.background = 'var(--green)'; bar.appendChild(fl); box.appendChild(bar); box.appendChild(el('span', 'f', r.note)); kb.appendChild(box);
     });
     const pr = document.getElementById('prio');
-    [['1차 집중', '11/2 주간 첫 접촉', 'var(--blue)'], ['2차', '11/16 주간 접촉', 'var(--g700)'], ['확인 후 순위 조정', '공식 창구 확인되는 대로 순차 접촉', 'var(--g400)'], ['기존 관계 유지', '신규 영업 자원 배정 제외', 'var(--g300)']].forEach(([wv, sub, col], wi) => {
+    [['1차 집중', '11/16 첫 접촉', 'var(--blue)'], ['2차', '11/23 주간 접촉', 'var(--g700)'], ['확인 후 순위 조정', '공식 창구 확인되는 대로 순차 접촉', 'var(--g400)'], ['기존 관계 유지', '신규 영업 자원 배정 제외', 'var(--g300)']].forEach(([wv, sub, col], wi) => {
       const L = sales.filter(a => (a.wave || '확인 후 순위 조정') === wv).sort((x, z) => Number(x.rank) - Number(z.rank));
       const c = el('div', 'col'); c.style.borderTopColor = col; const h = el('h4', '', `${wv} · ${L.length}곳`); if (!wi) h.style.color = 'var(--blue)'; c.appendChild(h); c.appendChild(el('p', 's', sub));
       if (wi >= 2) { const n = el('p', 's', L.map(a => a.name.replace(/^국립/, '').replace(/(대학교|학교)$/, '대')).join(', ')); n.style.color = 'var(--g700)'; c.appendChild(n); }
