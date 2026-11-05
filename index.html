@@ -122,6 +122,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 .sp-flow { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; }
 .sp-flow > div { border:1px solid var(--g200); border-radius:14px; padding:12px; font-size:13px; line-height:1.55; background:#fff; }
 .sp-flow b { display:block; color:var(--blue); margin-bottom:4px; } .sp-c1 { color:var(--g800); } .sp-c2 { color:#2f7d5b; margin-top:4px; }
+.sp-map .route { white-space:pre-line; font-size:14px; line-height:2; margin-top:10px; }
 .sp-map .lg { font-size:12px; color:var(--g600); line-height:1.7; margin-top:6px; } .sp-map .lg i { display:inline-block; width:10px; height:10px; margin-right:4px; vertical-align:-1px; }
 .sp-pr { margin:0; padding-left:18px; font-size:14px; line-height:1.7; }
 .sp-pre { white-space:pre-line; }
@@ -220,7 +221,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     </section>
 
     <section class="page" data-page="sales" hidden>
-      <div><p class="eyebrow">영업 현황</p><h1>27년 대학 영업, 지금 어디까지 왔나요</h1><p class="sub">지방대학 부트캠프 캠페인(20개교·23개 사업단) 기준입니다. 접촉·회신·미팅은 실제 기록만 셉니다.</p></div>
+      <div><p class="eyebrow">영업 현황</p><h1>27년 대학 영업, 지금 어디까지 왔나요</h1><p class="sub">강원권 대학 집중 영업(15개 대학·분교) 기준입니다. 접촉·회신·미팅은 실제 기록만 셉니다.</p></div>
       <div class="strat"><p class="t">전략 한 줄</p><p class="lead" id="s-lead">-</p><div class="tags" id="s-pts"></div></div>
       <div class="chips" role="tablist" id="tabs">
         <button class="chip" role="tab" aria-selected="true" data-tab="over">한눈에 보기</button>
@@ -311,7 +312,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611041605').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611051259').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -386,9 +387,11 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       const rt = el('div'); if (SP.edit) rt.appendChild(F(`visual.gov.${i}.amt`, 'div')); else { const bg = el('div', 'bg'), ii = el('i'); ii.style.width = Math.max(4, (parseFloat(v.gov[i].amt) || 0) / gmx * 100) + '%'; bg.appendChild(ii); rt.appendChild(bg); }
       rt.appendChild(F(`visual.gov.${i}.role`, 'div', 'role')); r.appendChild(rt); gc.appendChild(r); });
     mid.appendChild(gc);
-    const mp = el('div', 'card sp-map'); mp.appendChild(el('h3', '', '대상 지역')); mp.appendChild(document.getElementById('sp-map-svg').content.cloneNode(true));
+    const mp = el('div', 'card sp-map'); mp.appendChild(el('h3', '', '대상 지역'));
+    if (v.route) { mp.firstChild.textContent = '대상 지역 · 강원권 동선'; mp.appendChild(SP.edit ? F('visual.route', 'div', 'route', true) : el('div', 'route', v.route.join(String.fromCharCode(10)))); root.appendChild(mid); mid.appendChild(mp); } else {
+    mp.appendChild(document.getElementById('sp-map-svg').content.cloneNode(true));
     const lg = el('div', 'lg'); lg.innerHTML = '<i style="background:#c0392b;border-radius:50%"></i>TRACK 1 1차 6개교<br><i style="background:#d3dde7;border:1px solid #8aa1b8;border-radius:50%"></i>TRACK 1 권역별 대학 수 (20개교)<br><i style="background:#2f7d5b;border-radius:2px"></i>TRACK 2 대상 대학 수 (14개교)<br><i style="border:2px solid #e08a00;border-radius:50%;width:8px;height:8px"></i>레퍼런스 조선이공대';
-    mp.appendChild(lg); mid.appendChild(mp); root.appendChild(mid);
+    mp.appendChild(lg); mid.appendChild(mp); root.appendChild(mid); }
     // 일정 단계
     const sp0 = el('div', 'card'); sp0.appendChild(el('h3', '', '일정')); const stp = el('div', 'vz-steps'); stp.style.marginTop = '12px';
     v.steps.forEach((_, i) => { const s = el('div'); s.appendChild(F(`visual.steps.${i}.when`, 'b')); s.appendChild(F(`visual.steps.${i}.t`, 'span')); stp.appendChild(s); }); sp0.appendChild(stp); root.appendChild(sp0);
@@ -548,7 +551,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       const bar = el('div', 'bar'); const fl = el('i'); fl.style.width = pct + '%'; if (pct >= 100) fl.style.background = 'var(--green)'; bar.appendChild(fl); box.appendChild(bar); box.appendChild(el('span', 'f', r.note)); kb.appendChild(box);
     });
     const pr = document.getElementById('prio');
-    [['1차 집중', '11/16 첫 접촉', 'var(--blue)'], ['2차', '11/23 주간 접촉', 'var(--g700)'], ['확인 후 순위 조정', '공식 창구 확인되는 대로 순차 접촉', 'var(--g400)'], ['기존 관계 유지', '신규 영업 자원 배정 제외', 'var(--g300)']].forEach(([wv, sub, col], wi) => {
+    [['1차 집중', '11/16부터 원주권→춘천권→영동권', 'var(--blue)'], ['2차', '11/23 주간 수요 확인', 'var(--g700)'], ['확인 후 순위 조정', '공식 창구 확인되는 대로 순차 접촉', 'var(--g400)'], ['기존 관계 유지', '신규 영업 자원 배정 제외', 'var(--g300)']].forEach(([wv, sub, col], wi) => {
       const L = sales.filter(a => (a.wave || '확인 후 순위 조정') === wv).sort((x, z) => Number(x.rank) - Number(z.rank));
       const c = el('div', 'col'); c.style.borderTopColor = col; const h = el('h4', '', `${wv} · ${L.length}곳`); if (!wi) h.style.color = 'var(--blue)'; c.appendChild(h); c.appendChild(el('p', 's', sub));
       if (wi >= 2) { const n = el('p', 's', L.map(a => a.name.replace(/^국립/, '').replace(/(대학교|학교)$/, '대')).join(', ')); n.style.color = 'var(--g700)'; c.appendChild(n); }
