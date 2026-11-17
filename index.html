@@ -313,7 +313,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611171856').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611171859').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -376,13 +376,13 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     hero.appendChild(gl); root.appendChild(hero);
     // TRACK 카드: 대상·방식·시작 + 목표 깔때기
     const vt = el('div', 'vz-tracks'); (d.tracks || []).forEach((t, i) => { v.tracks[i] = v.tracks[i] || {};
-      const c = el('div', 'vz-tr' + (i ? ' t2' : '')); const hd = el('div', 'hd'); hd.appendChild(el('span', 'no', 'TRACK ' + (i + 1))); hd.appendChild(F(`visual.tracks.${i}.tag`, 'span', 'tag')); c.appendChild(hd);
+      const c = el('div', 'vz-tr' + (i ? ' t2' : '')); const hd = el('div', 'hd'); hd.appendChild(el('span', 'no', ['1차', '2차', '장기'][i] || ('TRACK ' + (i + 1)))); hd.appendChild(F(`visual.tracks.${i}.tag`, 'span', 'tag')); c.appendChild(hd);
       const fx = el('div', 'vz-facts'); [['who', '대상'], ['how', '방식'], ['first', '시작']].forEach(([k, lb]) => { const x = el('div'); x.appendChild(el('small', '', lb)); x.appendChild(F(`visual.tracks.${i}.${k}`, 'span')); fx.appendChild(x); }); c.appendChild(fx);
       if (!SP.edit) { const fn = el('div', 'vz-fun'), mx = Math.max(1, ...(t.kpi || []).map(k => parseFloat(k.n) || 0));
         (t.kpi || []).forEach(k => { const r = el('div', 'r'), s = el('span', '', k.label); s.style.width = Math.max(34, (parseFloat(k.n) || 0) / mx * 100) + '%'; r.appendChild(s); r.appendChild(el('b', '', k.n)); fn.appendChild(r); }); c.appendChild(fn); }
       vt.appendChild(c); }); root.appendChild(vt);
     // 2027 정부 사업 막대 + 지도
-    const mid = el('div', 'vz-mid'), gc = el('div', 'card vz-gov'); gc.appendChild(el('h3', '', '2027 정부 사업 (TRACK 2 공략)')); gc.appendChild(el('p', 'desc', '교육부 2027년 예산안 기준, 막대는 예산 규모'));
+    const mid = el('div', 'vz-mid'), gc = el('div', 'card vz-gov'); gc.appendChild(el('h3', '', '2027 교육부 사업 (2차 공략)')); gc.appendChild(el('p', 'desc', '교육부 2027년 예산안 기준, 막대는 예산 규모'));
     const gi = (d.gov && d.gov.items) || [], gmx = Math.max(1, ...gi.map((_, i) => parseFloat((v.gov[i] || {}).amt) || 0));
     gi.forEach((it, i) => { v.gov[i] = v.gov[i] || {}; const r = el('div', 'r'), lft = el('div'); lft.appendChild(el('div', 'nm', it.name)); lft.appendChild(el('div', 'bd', it.budget)); r.appendChild(lft);
       const rt = el('div'); if (SP.edit) rt.appendChild(F(`visual.gov.${i}.amt`, 'div')); else { const bg = el('div', 'bg'), ii = el('i'); ii.style.width = Math.max(4, (parseFloat(v.gov[i].amt) || 0) / gmx * 100) + '%'; bg.appendChild(ii); rt.appendChild(bg); }
@@ -415,7 +415,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     }
     const sc = el('div', 'card'); sc.appendChild(el('h3', '', '단계별 할 일')); const fl = el('div', 'sp-flow'); fl.style.marginTop = '10px';
     (d.schedule || []).forEach((_, i) => { const b = el('div'); b.appendChild(F(`schedule.${i}.when`, 'b')); b.appendChild(F(`schedule.${i}.t1`, 'div', 'sp-c1')); b.appendChild(F(`schedule.${i}.t2`, 'div', 'sp-c2')); fl.appendChild(b); });
-    sc.appendChild(fl); const lg0 = el('p', 'mini', '검은 글씨 TRACK 1 · 초록 글씨 TRACK 2'); lg0.style.marginTop = '8px'; sc.appendChild(lg0);
+    sc.appendChild(fl); const lg0 = el('p', 'mini', '검은 글씨 1차 기존 레퍼런스 사업 · 초록 글씨 2차 신규 교육부 사업'); lg0.style.marginTop = '8px'; sc.appendChild(lg0);
     const pr = el('div'); pr.style.marginTop = '14px'; pr.appendChild(el('h3', '', '원칙'));
     if (SP.edit) pr.appendChild(F('principles', 'div', '', true)); else { const ul = el('ul', 'sp-pr'); (d.principles || []).forEach(t => ul.appendChild(el('li', '', t))); pr.appendChild(ul); }
     sc.appendChild(pr); root.appendChild(sc);
@@ -596,7 +596,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       if (props.length) {
         const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171856').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171859').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
         props.forEach(p => {
           const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
