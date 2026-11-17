@@ -197,7 +197,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       <div class="stats">
         <button class="stat" data-jump="proj" style="text-align:left;cursor:pointer"><span class="k">진행 중인 사업</span><span class="v"><span id="h-proj">-</span><small>개</small></span><span class="f">사업 현황 보기</span></button>
         <button class="stat" data-jump="sales" style="text-align:left;cursor:pointer"><span class="k">영업 접촉 대학</span><span class="v"><span id="h-contact">-</span><small id="h-contact-t"></small></span><span class="f">영업 현황 보기</span></button>
-        <button class="stat" data-jump="bids" style="text-align:left;cursor:pointer"><span class="k">7일 안 마감 공고</span><span class="v"><span id="h-bids">-</span><small>건</small></span><span class="f">신규사업 공고 보기</span></button>
+        <button class="stat" data-jump="bids" style="text-align:left;cursor:pointer"><span class="k">2주 안 마감 공고</span><span class="v"><span id="h-bids">-</span><small>건</small></span><span class="f">신규사업 공고 보기</span></button>
         <button class="stat" data-jump="plan" style="text-align:left;cursor:pointer"><span class="k">기획 중인 신규사업</span><span class="v"><span id="h-plans">-</span><small>개</small></span><span class="f">신규사업 기획 보기</span></button>
       </div>
       <div class="strat"><p class="t">영업 전략 한 줄</p><p class="lead" id="h-lead" style="margin-bottom:0">-</p></div>
@@ -259,7 +259,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       <div class="stats">
         <div class="stat"><span class="k">수집한 공고</span><span class="v"><span id="bs-n">-</span><small>건</small></span></div>
         <div class="stat"><span class="k">새로 올라온 공고</span><span class="v"><span id="bs-new">-</span><small>건</small></span></div>
-        <div class="stat"><span class="k">7일 안 마감</span><span class="v"><span id="bs-soon">-</span><small>건</small></span></div>
+        <div class="stat"><span class="k">2주 안 마감</span><span class="v"><span id="bs-soon">-</span><small>건</small></span></div>
         <div class="stat"><span class="k">관심 공고</span><span class="v"><span id="bs-saved">-</span><small>건</small></span></div>
       </div>
       <div class="card"><h3>공고 목록</h3><p class="desc">마감 순 · 공고명을 누르면 원문으로 이동합니다.</p><div class="tbox"><table>
@@ -313,7 +313,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611171853').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611171854').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -447,15 +447,15 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
   }
 
   const render = () => Promise.all(['meta', 'projects', 'sales', 'sales_kpi', 'weeks', 'strategy', 'bids', 'plans', 'plan_refs', 'gangwon'].map(load)).then(([meta, projects, sales, kpi, weeks, strategy, bids, plans, refs, gangwon]) => {
-    // 마감됐거나 오늘 마감인 공고는 화면에서 뺀다(마감일 없는 공고는 유지)
-    bids = [].concat(bids).filter(b => { const d = days(b.deadline); return d === null || d > 0; });
+    // 마감까지 7일 이하(마감 지남 포함)인 공고는 제안서 작성이 어려워 화면에서 뺀다(마감일 없는 공고는 유지)
+    bids = [].concat(bids).filter(b => { const d = days(b.deadline); return d === null || d > 7; });
     // 홈
     set('h-proj', projects.filter(p => !p.parent).length); set('h-plans', plans.length);
     const hl = document.getElementById('h-long');
     sales.filter(a => a.wave === '장기 중점 사업').sort((x, z) => Number(x.rank) - Number(z.rank)).forEach(a => { const row = el('div', 'week'); const top = el('div', 'top'); top.appendChild(el('span', 'rk rk-m', '장기')); top.appendChild(el('b', '', String(a.name).replace(/\(.*\)$/, '').trim())); row.appendChild(top); row.appendChild(el('p', '', String(a.tags || '').split(' | ').filter(Boolean).join(' · ') || a.next || '-')); hl.appendChild(row); });
     if (!hl.children.length) hl.appendChild(el('p', 'mini', '등록된 장기 중점과제가 없습니다.'));
     const ck = kpi.find(r => r.metric === '접촉 대학'); if (ck) { set('h-contact', ck.value); set('h-contact-t', '/' + ck.target); }
-    set('h-bids', bids.filter(b => { const d = days(b.deadline); return d !== null && d >= 0 && d <= 7; }).length);
+    set('h-bids', bids.filter(b => { const d = days(b.deadline); return d !== null && d <= 14; }).length);
     const hs = Array.isArray(strategy) ? strategy[0] : strategy; if (hs) set('h-lead', hs.strategy);
     const todo = [].concat(projects.map(p => ({ kind: '사업', who: p.name, what: p.next, due: p.due })), sales.filter(a => yes(a.campaignFocus) && a.stage !== '보류').map(a => ({ kind: '영업', who: a.name, what: a.next, due: a.due })))
       .map(t => Object.assign(t, { d: days(t.due) })).filter(t => t.d !== null && t.d <= 14).sort((a, b) => a.d - b.d);
@@ -596,7 +596,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       if (props.length) {
         const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171853').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171854').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
         props.forEach(p => {
           const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
@@ -617,8 +617,8 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 
     // 신규사업 공고
     set('bs-n', bids.length); set('bs-new', bids.filter(b => yes(b.isNew)).length); set('bs-saved', bids.filter(b => yes(b.saved)).length);
-    set('bs-soon', bids.filter(b => { const d = days(b.deadline); return d !== null && d >= 0 && d <= 7; }).length);
-    if (bids[0] && bids[0].collected) set('bid-sub', `나라장터·교육부 등에서 월·수·금 오전에 모은 공고입니다. 마지막 수집 ${String(bids[0].collected).replace('T', ' ').slice(0, 16)}`);
+    set('bs-soon', bids.filter(b => { const d = days(b.deadline); return d !== null && d <= 14; }).length);
+    if (bids[0] && bids[0].collected) set('bid-sub', `나라장터·교육부 등에서 월·수·금 오전에 모은 공고입니다. 마감 7일 이내 공고는 뺐습니다. 마지막 수집 ${String(bids[0].collected).replace('T', ' ').slice(0, 16)}`);
     const bb = document.getElementById('t-bids');
     bids.forEach(r => { const tr = el('tr'); dueCell(tr, r.deadline); const tt = cell(tr, ''); const a = el('a', 'link', r.title); if (/^https:\/\//.test(r.url || '')) { a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; } tt.appendChild(a); const meta = el('div', 'mini'); meta.style.cssText = 'margin-top:3px;display:flex;gap:6px;flex-wrap:wrap'; meta.appendChild(el('span', 'rk rk-l', r.source)); if (yes(r.isNew)) meta.appendChild(el('span', 'rk rk-b', '새 공고')); if (yes(r.saved)) meta.appendChild(el('span', 'rk rk-g', '관심')); tt.appendChild(meta); cell(tr, r.org, 'mute hide-narrow'); cell(tr, Number(r.amount) ? eok(r.amount) : '-', 'num'); bb.appendChild(tr); });
   });
