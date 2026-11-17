@@ -212,7 +212,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       <div style="display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap"><div><p class="eyebrow">사업 현황</p><h1>진행 중인 사업, 다음에 할 일</h1><p class="sub">완료·보류를 뺀 사업의 단계와 다음 할 일입니다.</p></div><div id="proj-link"></div></div>
       <div class="strat"><p class="t">지금 진행 중인 사업</p><ul id="ps-sum" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.6;color:var(--g900)"></ul></div>
       <div class="stats">
-        <div class="stat"><span class="k">2026 총 매출 (VAT 제외)</span><span class="v"><span id="ps-rev">-</span></span><span class="f">매출실적 엑셀 합계(해커톤 수의계약 2,100만 원 반영), 완료 사업 포함</span></div>
+        <div class="stat"><span class="k">2026 총 매출 (VAT 제외)</span><span class="v"><span id="ps-rev">-</span></span></div>
         <div class="stat"><span class="k">진행 중인 사업</span><span class="v"><span id="ps-n">-</span><small>개</small></span></div>
         <div class="stat"><span class="k">2주 안 다음 할 일</span><span class="v"><span id="ps-soon">-</span><small>건</small></span></div>
         <div class="stat"><span class="k">기한 지난 다음 할 일</span><span class="v"><span id="ps-over">-</span><small>건</small></span></div>
@@ -313,7 +313,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611171846').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611171848').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -596,7 +596,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       if (props.length) {
         const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171846').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171848').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
         props.forEach(p => {
           const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
