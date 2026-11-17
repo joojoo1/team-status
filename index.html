@@ -313,7 +313,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611171824').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611171833').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -563,8 +563,9 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     [['1차', ['1차 집중'], '11/23부터 원주→춘천→영동', 'var(--blue)'], ['2차', ['2차'], '11/23 주간 수요 확인', 'var(--g700)'], ['3차', ['확인 후 순위 조정', '기존 관계 유지'], '창구 확인되는 대로 순차 접촉', 'var(--g400)']].forEach(([lab, waves, sub, col], wi) => {
       const L = sales.filter(a => a.wave !== '장기 중점 사업' && waves.includes(a.wave || '확인 후 순위 조정')).sort((x, z) => Number(x.rank) - Number(z.rank));
       const c = el('div', 'col'); c.style.borderTopColor = col; const h = el('h4', '', `${lab} · ${L.length}곳`); if (!wi) h.style.color = 'var(--blue)'; c.appendChild(h); c.appendChild(el('p', 's', sub));
-      if (wi) { const n = el('p', 's', L.map(a => shortName(a.name)).join(', ')); n.style.color = 'var(--g700)'; c.appendChild(n); }
-      else L.forEach(a => { const u = el('div', 'uni'); const top = el('div', 'top'); top.appendChild(el('b', '', shortName(a.name))); const d = days(a.due); top.appendChild(el('span', 'mini', d === null ? '' : d < 0 ? `${-d}일 지남` : `${date(a.due)}`)); top.appendChild(el('span', 'rk ' + (STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); u.appendChild(top); c.appendChild(u); });
+      // 대학 이름 옆 키워드 2개(중점·특징)
+      const kw = a => { const w = el('div'); w.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin-top:4px'; String(a.tags || '').split(' | ').filter(Boolean).slice(0, 2).forEach(k => { const s = el('span', '', k); s.style.cssText = 'font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--blue-50);color:var(--blue)'; w.appendChild(s); }); return w; };
+      L.forEach(a => { const u = el('div', 'uni'); const top = el('div', 'top'); top.appendChild(el('b', '', shortName(a.name))); if (!wi) { const d = days(a.due); top.appendChild(el('span', 'mini', d === null ? '' : d < 0 ? `${-d}일 지남` : `${date(a.due)}`)); top.appendChild(el('span', 'rk ' + (STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); } u.appendChild(top); u.appendChild(kw(a)); c.appendChild(u); });
       pr.appendChild(c);
     });
     // 장기 중점 사업: 별도로 추가 영업하는 정부사업 연계 건(기간·예산은 공개 보도자료 기준)
@@ -595,7 +596,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       if (props.length) {
         const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171824').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171833').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
         props.forEach(p => {
           const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
