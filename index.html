@@ -201,6 +201,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
         <button class="stat" data-jump="plan" style="text-align:left;cursor:pointer"><span class="k">기획 중인 신규사업</span><span class="v"><span id="h-plans">-</span><small>개</small></span><span class="f">신규사업 기획 보기</span></button>
       </div>
       <div class="strat"><p class="t">영업 전략 한 줄</p><p class="lead" id="h-lead" style="margin-bottom:0">-</p></div>
+      <div class="card" style="border-top:3px solid #E8711A"><h3>장기 중점과제</h3><p class="desc">강원 영업과 별도로 길게 가져가는 정부사업 연계 건</p><div id="h-long"></div></div>
       <div class="grid2">
         <div class="card"><h3>2주 안에 챙길 일</h3><p class="desc">사업·영업 다음 할 일 중 기한이 2주 안인 것</p><div id="h-todo"></div></div>
         <div class="card"><h3>신규사업 기획</h3><p class="desc">기획 중인 사업과 한 줄 요약</p><div id="h-plan"></div></div>
@@ -211,7 +212,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       <div style="display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap"><div><p class="eyebrow">사업 현황</p><h1>진행 중인 사업, 다음에 할 일</h1><p class="sub">완료·보류를 뺀 사업의 단계와 다음 할 일입니다.</p></div><div id="proj-link"></div></div>
       <div class="strat"><p class="t">지금 진행 중인 사업</p><ul id="ps-sum" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.6;color:var(--g900)"></ul></div>
       <div class="stats">
-        <div class="stat"><span class="k">2026 총 매출 (VAT 제외)</span><span class="v"><span id="ps-rev">-</span></span><span class="f">매출실적 엑셀 합계(해커톤 3,000만 원 반영), 완료 사업 포함</span></div>
+        <div class="stat"><span class="k">2026 총 매출 (VAT 제외)</span><span class="v"><span id="ps-rev">-</span></span><span class="f">매출실적 엑셀 합계(해커톤 수의계약 2,100만 원 반영), 완료 사업 포함</span></div>
         <div class="stat"><span class="k">진행 중인 사업</span><span class="v"><span id="ps-n">-</span><small>개</small></span></div>
         <div class="stat"><span class="k">2주 안 다음 할 일</span><span class="v"><span id="ps-soon">-</span><small>건</small></span></div>
         <div class="stat"><span class="k">기한 지난 다음 할 일</span><span class="v"><span id="ps-over">-</span><small>건</small></span></div>
@@ -312,7 +313,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611171813').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611171824').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -446,8 +447,13 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
   }
 
   const render = () => Promise.all(['meta', 'projects', 'sales', 'sales_kpi', 'weeks', 'strategy', 'bids', 'plans', 'plan_refs', 'gangwon'].map(load)).then(([meta, projects, sales, kpi, weeks, strategy, bids, plans, refs, gangwon]) => {
+    // 마감됐거나 오늘 마감인 공고는 화면에서 뺀다(마감일 없는 공고는 유지)
+    bids = [].concat(bids).filter(b => { const d = days(b.deadline); return d === null || d > 0; });
     // 홈
     set('h-proj', projects.filter(p => !p.parent).length); set('h-plans', plans.length);
+    const hl = document.getElementById('h-long');
+    sales.filter(a => a.wave === '장기 중점 사업').sort((x, z) => Number(x.rank) - Number(z.rank)).forEach(a => { const row = el('div', 'week'); const top = el('div', 'top'); top.appendChild(el('span', 'rk rk-m', '장기')); top.appendChild(el('b', '', String(a.name).replace(/\(.*\)$/, '').trim())); row.appendChild(top); row.appendChild(el('p', '', String(a.tags || '').split(' | ').filter(Boolean).join(' · ') || a.next || '-')); hl.appendChild(row); });
+    if (!hl.children.length) hl.appendChild(el('p', 'mini', '등록된 장기 중점과제가 없습니다.'));
     const ck = kpi.find(r => r.metric === '접촉 대학'); if (ck) { set('h-contact', ck.value); set('h-contact-t', '/' + ck.target); }
     set('h-bids', bids.filter(b => { const d = days(b.deadline); return d !== null && d >= 0 && d <= 7; }).length);
     const hs = Array.isArray(strategy) ? strategy[0] : strategy; if (hs) set('h-lead', hs.strategy);
@@ -527,11 +533,10 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     ordered.forEach(r => { const pb = bodies[r.group || '기타'] || bodies[(top.find(t => t.id === r.parent) || {}).group || '기타'];
       const tr = el('tr'); const nc = cell(tr, '');
       if (r.parent) { nc.style.paddingLeft = '28px'; const s = el('span', '', '└ ' + r.name); s.style.color = 'var(--g700)'; nc.appendChild(s); } else nc.appendChild(el('b', '', r.name));
-      if (r.dealNote) { const dn = el('div', 'mini', r.dealNote); dn.style.marginTop = '4px'; dn.style.color = 'var(--g700)'; nc.appendChild(dn); }
       const ac = cell(tr, ''); ac.style.whiteSpace = 'nowrap'; ac.appendChild(el(r.parent ? 'span' : 'b', '', amt(r))); if (r.amountBasis) ac.appendChild(el('div', 'mini', r.amountBasis)); if (r.contractType) { const ct = el('span', 'rk rk-g', r.contractType); ct.style.marginTop = '3px'; ct.style.display = 'inline-block'; ac.appendChild(ct); }
       cell(tr, '').appendChild(el('span', 'rk rk-b', r.stage));
       const pg = el('td', 'hide-narrow'); pg.style.minWidth = '6rem'; pg.appendChild(el('span', 'mini', (Number(r.progress) || 0) + '%')); const bar = el('div', 'bar'); const f = el('i'); f.style.width = Math.min(100, Number(r.progress) || 0) + '%'; bar.appendChild(f); pg.appendChild(bar); tr.appendChild(pg);
-      cell(tr, r.next || '-'); dueCell(tr, r.due);
+      const nxc = cell(tr, r.next || '-'); if (r.dealNote) { const dn = el('div', '', r.dealNote); dn.style.cssText = 'margin-top:6px;font-size:13px;font-weight:600;color:var(--g800)'; nxc.appendChild(dn); } dueCell(tr, r.due);
       const rk = cell(tr, '', 'hide-narrow'); if (r.risk) rk.appendChild(el('span', 'rk ' + (r.risk === '높음' ? 'rk-h' : r.risk === '보통' ? 'rk-m' : 'rk-l'), r.risk));
       pb.appendChild(tr);
     });
@@ -553,19 +558,21 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       const bar = el('div', 'bar'); const fl = el('i'); fl.style.width = pct + '%'; if (pct >= 100) fl.style.background = 'var(--green)'; bar.appendChild(fl); box.appendChild(bar); box.appendChild(el('span', 'f', r.note)); kb.appendChild(box);
     });
     const pr = document.getElementById('prio');
-    [['1차 집중', '11/23부터 원주권→춘천권→영동권 · 우선 3개교 선영업 제안', 'var(--blue)'], ['2차', '11/23 주간 수요 확인', 'var(--g700)'], ['확인 후 순위 조정', '공식 창구 확인되는 대로 순차 접촉', 'var(--g400)'], ['기존 관계 유지', '신규 영업 자원 배정 제외', 'var(--g300)']].forEach(([wv, sub, col], wi) => {
-      const L = sales.filter(a => (a.wave || '확인 후 순위 조정') === wv).sort((x, z) => Number(x.rank) - Number(z.rank));
-      const c = el('div', 'col'); c.style.borderTopColor = col; const h = el('h4', '', `${wv} · ${L.length}곳`); if (!wi) h.style.color = 'var(--blue)'; c.appendChild(h); c.appendChild(el('p', 's', sub));
-      if (wi >= 2) { const n = el('p', 's', L.map(a => a.name.replace(/^국립/, '').replace(/(대학교|학교)$/, '대')).join(', ')); n.style.color = 'var(--g700)'; c.appendChild(n); }
-      else L.forEach(a => { const u = el('div', 'uni'); const top = el('div', 'top'); top.appendChild(el('b', '', `${a.rank}. ${a.name.replace(/학교$/, '')}`)); top.appendChild(el('span', 'mini', a.region)); top.appendChild(el('span', 'rk ' + (STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); u.appendChild(top); if (a.why) u.appendChild(el('p', '', a.why)); const d = days(a.due); u.appendChild(el('p', 'nx', (a.next || '-') + (d === null ? '' : d < 0 ? ` · ${-d}일 지남` : ` · D-${d}`))); c.appendChild(u); });
+    // 우선순위: 1차·2차·3차 세 묶음. 1차만 한 줄씩(이름·단계·기한), 2·3차는 이름만
+    const shortName = n => String(n).replace(/^국립/, '').replace(/\(.*\)$/, '').replace(/(대학교|학교)$/, '대').trim();
+    [['1차', ['1차 집중'], '11/23부터 원주→춘천→영동', 'var(--blue)'], ['2차', ['2차'], '11/23 주간 수요 확인', 'var(--g700)'], ['3차', ['확인 후 순위 조정', '기존 관계 유지'], '창구 확인되는 대로 순차 접촉', 'var(--g400)']].forEach(([lab, waves, sub, col], wi) => {
+      const L = sales.filter(a => a.wave !== '장기 중점 사업' && waves.includes(a.wave || '확인 후 순위 조정')).sort((x, z) => Number(x.rank) - Number(z.rank));
+      const c = el('div', 'col'); c.style.borderTopColor = col; const h = el('h4', '', `${lab} · ${L.length}곳`); if (!wi) h.style.color = 'var(--blue)'; c.appendChild(h); c.appendChild(el('p', 's', sub));
+      if (wi) { const n = el('p', 's', L.map(a => shortName(a.name)).join(', ')); n.style.color = 'var(--g700)'; c.appendChild(n); }
+      else L.forEach(a => { const u = el('div', 'uni'); const top = el('div', 'top'); top.appendChild(el('b', '', shortName(a.name))); const d = days(a.due); top.appendChild(el('span', 'mini', d === null ? '' : d < 0 ? `${-d}일 지남` : `${date(a.due)}`)); top.appendChild(el('span', 'rk ' + (STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); u.appendChild(top); c.appendChild(u); });
       pr.appendChild(c);
     });
     // 장기 중점 사업: 별도로 추가 영업하는 정부사업 연계 건(기간·예산은 공개 보도자료 기준)
     const LT = sales.filter(a => a.wave === '장기 중점 사업').sort((x, z) => Number(x.rank) - Number(z.rank));
     if (LT.length) {
-      const lc = el('div', 'card'); lc.style.borderTop = '3px solid #E8711A'; lc.appendChild(el('h3', '', `장기 중점 사업 · ${LT.length}건`)); lc.appendChild(el('p', 'desc', '강원 캠페인과 별도로 추가 영업하는 중요 사업입니다. 정부사업 기간 내내 장기로 가져갑니다.'));
+      const lc = el('div', 'card'); lc.style.borderTop = '3px solid #E8711A'; lc.appendChild(el('h3', '', `장기 중점 사업 · ${LT.length}건`)); lc.appendChild(el('p', 'desc', '강원 영업과 별도로 길게 가져가는 정부사업 연계 건'));
       const g2 = el('div', 'prio'); g2.style.marginTop = '10px';
-      LT.forEach(a => { const u = el('div', 'uni'); const top = el('div', 'top'); top.appendChild(el('b', '', a.name)); top.appendChild(el('span', 'mini', a.region)); top.appendChild(el('span', 'rk ' + (STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); u.appendChild(top); if (a.gov) { const gv = el('p', '', a.gov); gv.style.fontWeight = '600'; u.appendChild(gv); } if (a.why) u.appendChild(el('p', '', a.why)); const d = days(a.due); u.appendChild(el('p', 'nx', (a.next || '-') + (d === null ? '' : d < 0 ? ` · ${-d}일 지남` : ` · D-${d}`))); g2.appendChild(u); });
+      LT.forEach(a => { const u = el('div', 'uni'); const top = el('div', 'top'); top.appendChild(el('b', '', shortName(a.name))); top.appendChild(el('span', 'rk ' + (STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); u.appendChild(top); const tg = el('div', 'tags'); tg.style.cssText = 'margin:8px 0 6px;display:flex;flex-wrap:wrap;gap:6px'; String(a.tags || '').split(' | ').filter(Boolean).forEach(k => tg.appendChild(el('span', 'tag', k))); u.appendChild(tg); const d = days(a.due); u.appendChild(el('p', 'nx', '다음: ' + (a.nextShort || a.next || '-') + (d === null ? '' : d < 0 ? ` · ${-d}일 지남` : ` · D-${d}`))); g2.appendChild(u); });
       lc.appendChild(g2); pr.parentNode.insertBefore(lc, pr.nextSibling);
     }
     const wb = document.getElementById('weeks'); const iso = new Date().toISOString().slice(0, 10);
@@ -588,7 +595,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       if (props.length) {
         const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171813').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171824').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
         props.forEach(p => {
           const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
