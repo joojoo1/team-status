@@ -313,7 +313,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611171904').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611171905').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -359,9 +359,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     const root = document.getElementById('sp-root'); root.textContent = ''; const d = SP.d;
     set('sp-title', d.title || '27년 대학 영업 계획');
     set('sp-meta', `${d.author || ''} · ${d.team || ''} · 최종 수정 ${d.updated || ''}`);
-    // 맨 위 요약은 전략 줄만 (계획·목표 줄은 아래 목표·일정 칸에 있다)
-    const sum = el('div', 'sp-sum'); sum.appendChild(el('p', 't', '전략 요약'));
-    const si = Math.max(0, (d.summary || []).findIndex(x => /^s*전략/.test(x))); sum.appendChild(F('summary.' + si, 'p', 'line')); root.appendChild(sum);
+    // 전략 요약 칸은 11/17 사용자 지시로 표시하지 않는다(데이터 summary는 보존)
     // 한눈에 보기 (짧은 문구·도식). 값은 d.visual, 없으면 기본값으로 채운다
     if (!d.visual) d.visual = JSON.parse(JSON.stringify(VIS0));
     const v = d.visual; v.goal = v.goal || {}; v.tracks = v.tracks || []; v.gov = v.gov || []; v.steps = v.steps || [];
@@ -596,7 +594,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       if (props.length) {
         const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171904').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611171905').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
         props.forEach(p => {
           const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
