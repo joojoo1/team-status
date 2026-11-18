@@ -184,11 +184,11 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     <p class="navg">현황</p>
     <button class="nav" role="tab" aria-selected="true" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12H3l9-9 9 9h-2"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M10 12h4v4h-4z"/></svg>홈</button>
     <button class="nav" role="tab" aria-selected="false" data-go="proj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="6" rx="2"/><rect x="4" y="14" width="16" height="6" rx="2"/></svg>사업 현황</button>
+    <button class="nav" role="tab" aria-selected="false" data-go="gov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21v-9M10 21v-9M14 21v-9M19 21v-9"/><path d="M12 3l9 5H3z"/></svg>정부 부처 현황</button>
     <button class="nav" role="tab" aria-selected="false" data-go="splan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>영업 전략</button>
     <button class="nav" role="tab" aria-selected="false" data-go="sales"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="9"/><path d="M15 9l6-6"/></svg>영업 현황</button>
     <button class="nav" role="tab" aria-selected="false" data-go="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>신규사업 기획</button>
     <button class="nav" role="tab" aria-selected="false" data-go="bids"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>신규사업 공고</button>
-    <button class="nav" role="tab" aria-selected="false" data-go="gov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21v-9M10 21v-9M14 21v-9M19 21v-9"/><path d="M12 3l9 5H3z"/></svg>정부 부처 현황</button>
     <div class="foot"><b>갱신</b><br><span id="updated">-</span></div>
   </aside>
 
@@ -275,7 +275,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
         <tbody id="t-refs"></tbody></table></div></div>
     </section>
     <section class="page" data-page="gov" hidden>
-      <div><p class="eyebrow">정부 부처 현황</p><h1>2027년 정부 예산, 우리가 들어갈 사업</h1><p class="sub">2026. 11. 18. 기준 · 국회 심의 전 정부안입니다.</p></div>
+      <div><p class="eyebrow">정부 부처 현황</p><h1>2027년 정부 예산, 우리가 들어갈 사업</h1><p class="sub">2026. 11. 18. 기준 · 국회 심의 전 정부안</p></div>
       <div id="gov-root"></div>
     </section>
   </main>
@@ -343,7 +343,9 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 .gv-tr p { margin:0; font-size:13.5px; line-height:1.6; color:var(--g700); }
 .gv-tr .go { font-size:12px; color:var(--g500); margin-top:auto; }
 .gv-op .ld { font-size:16px; font-weight:700; line-height:1.6; margin:6px 0 10px; color:var(--g900); }
-.gv-op p.b { font-size:14px; line-height:1.75; color:var(--g700); margin:0 0 8px; }
+.gv-op p.b { font-size:14px; line-height:1.7; color:var(--g700); margin:0 0 6px; padding-left:14px; position:relative; }
+.gv-op p.b::before { content:""; position:absolute; left:2px; top:.7em; width:5px; height:5px; border-radius:50%; background:var(--g400); }
+.gv-op p.b b { color:var(--g900); font-weight:700; margin-right:4px; }
 .gv-flow { display:flex; align-items:stretch; gap:8px; margin-top:14px; flex-wrap:wrap; }
 .gv-flow .st { flex:1 1 10rem; background:var(--g50); border-radius:14px; padding:12px 14px; display:flex; gap:10px; align-items:center; font-size:14px; font-weight:700; color:var(--g900); }
 .gv-flow .st i { font-style:normal; width:24px; height:24px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800; color:#fff; background:var(--tc); }
@@ -419,7 +421,7 @@ window.renderGov = (G, root) => {
   tcard.appendChild(tg); wrap.appendChild(tcard);
 
   const op = el('div', 'gv-card gv-op'); op.appendChild(el('h3', '', '종합 의견')); op.appendChild(el('p', 'ld', G.opinionLead));
-  [].concat(G.opinion || []).forEach(s => op.appendChild(el('p', 'b', s)));
+  [].concat(G.opinion || []).forEach(s => { const p = el('p', 'b'); const i = s.indexOf(': '); if (i > 0 && i < 20) { p.appendChild(el('b', '', s.slice(0, i))); p.appendChild(document.createTextNode(s.slice(i + 2))); } else p.textContent = s; op.appendChild(p); });
   const fl = el('div', 'gv-flow'); fl.setAttribute('aria-label', '핵심 추진 방향');
   [].concat(G.flow || []).forEach((s, i) => { if (i) fl.appendChild(el('span', 'ar', '→')); const st = el('div', 'st'); const n = el('i', '', String(i + 1)); n.style.setProperty('--tc', tc(i + 1)); st.appendChild(n); st.appendChild(document.createTextNode(s)); fl.appendChild(st); });
   op.appendChild(el('p', 'gv-note', '핵심 추진 방향')); op.lastChild.style.margin = '14px 0 0'; op.lastChild.style.fontWeight = '700'; op.lastChild.style.color = 'var(--g700)';
@@ -465,7 +467,7 @@ window.renderGov = (G, root) => {
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611181007').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611181013').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); try { window.renderGov(B.json.gov, document.getElementById('gov-root')); } catch (e) {} };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -746,7 +748,7 @@ window.renderGov = (G, root) => {
       if (props.length) {
         const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611181007').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611181013').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
         props.forEach(p => {
           const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
