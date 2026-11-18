@@ -188,6 +188,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     <button class="nav" role="tab" aria-selected="false" data-go="sales"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="9"/><path d="M15 9l6-6"/></svg>영업 현황</button>
     <button class="nav" role="tab" aria-selected="false" data-go="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>신규사업 기획</button>
     <button class="nav" role="tab" aria-selected="false" data-go="bids"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>신규사업 공고</button>
+    <button class="nav" role="tab" aria-selected="false" data-go="gov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21v-9M10 21v-9M14 21v-9M19 21v-9"/><path d="M12 3l9 5H3z"/></svg>정부 부처 현황</button>
     <div class="foot"><b>갱신</b><br><span id="updated">-</span></div>
   </aside>
 
@@ -273,9 +274,160 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
         <thead><tr><th>공고일</th><th>공고명</th><th class="hide-narrow">발주·수요기관</th><th style="text-align:right">사업 규모</th><th>낙찰·수행사</th></tr></thead>
         <tbody id="t-refs"></tbody></table></div></div>
     </section>
+    <section class="page" data-page="gov" hidden>
+      <div><p class="eyebrow">정부 부처 현황</p><h1>2027년 정부 예산, 우리가 들어갈 사업</h1><p class="sub">2026. 11. 18. 기준 · 국회 심의 전 정부안입니다.</p></div>
+      <div id="gov-root"></div>
+    </section>
   </main>
 </div>
 
+<style>
+.gv { display:flex; flex-direction:column; gap:16px; --gv-moe:#3182F6; --gv-moe-50:#E8F3FF; --gv-msit:#6A4CE0; --gv-msit-50:#F0ECFF; --gv-mss:#03A463; --gv-mss-50:#E5F8F0; --gv-t1:#3182F6; --gv-t2:#E8711A; --gv-t3:#2F7D5B; }
+.gv * { box-sizing:border-box; }
+.gv-card { background:#fff; border-radius:20px; padding:22px 24px; min-width:0; }
+.gv-card h3 { font-size:17px; font-weight:700; margin:0 0 2px; }
+.gv-desc { font-size:13.5px; color:var(--g500); margin:0 0 14px; }
+.gv-note { font-size:12.5px; color:var(--g500); line-height:1.6; margin:12px 0 0; }
+.gv-lead { background:var(--blue-50); border-radius:20px; padding:20px 24px; }
+.gv-lead .t { font-size:12.5px; font-weight:700; color:var(--blue); margin:0; }
+.gv-lead .l { font-size:16.5px; font-weight:700; line-height:1.6; margin:6px 0 10px; color:var(--g900); }
+.gv-lead .f { font-size:14px; line-height:1.65; color:var(--g700); margin:10px 0 0; }
+.gv-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.gv-tag { display:inline-flex; align-items:center; min-height:24px; padding:2px 9px; border-radius:7px; font-size:12px; font-weight:600; background:var(--g100); color:var(--g700); }
+.gv-lead .gv-tag { background:#fff; }
+.gv-mins { display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.gv-min { background:#fff; border-radius:20px; padding:18px 20px; border-top:4px solid var(--c); display:flex; flex-direction:column; gap:8px; min-width:0; }
+.gv-min .hd { display:flex; align-items:center; justify-content:space-between; gap:6px 8px; flex-wrap:wrap; }
+.gv-min .nm { font-size:16px; font-weight:700; white-space:nowrap; }
+.gv-min .rkc { font-size:12px; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--cb); color:var(--c); white-space:nowrap; }
+.gv-min .amt { font-size:27px; font-weight:800; letter-spacing:-0.02em; line-height:1.15; color:var(--g900); }
+.gv-min .gr { display:flex; align-items:baseline; gap:6px; font-size:13px; color:var(--g600); }
+.gv-min .gr b { font-size:15px; font-weight:700; color:var(--c); }
+.gv-gbar { height:8px; border-radius:4px; background:var(--g100); overflow:hidden; }
+.gv-gbar i { display:block; height:100%; border-radius:4px; background:var(--c); }
+.gv-chips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 6px; }
+.gv-chip { height:34px; padding:0 14px; border-radius:999px; background:#fff; color:var(--g700); font-size:13.5px; font-weight:600; border:1px solid var(--g200) !important; display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-family:inherit; }
+.gv-chip .n { font-size:12px; color:var(--g500); font-weight:700; }
+.gv-chip[aria-pressed=true] { background:var(--g900); color:#fff; border-color:var(--g900) !important; }
+.gv-chip[aria-pressed=true] .n { color:var(--g300); }
+.gv-crit { margin:0 0 6px; border-radius:14px; background:var(--g50); }
+.gv-crit summary { cursor:pointer; padding:11px 14px; font-size:13.5px; font-weight:600; color:var(--g700); list-style:none; display:flex; align-items:center; gap:6px; }
+.gv-crit summary::-webkit-details-marker { display:none; }
+.gv-crit summary::before { content:""; width:7px; height:7px; border-right:2px solid var(--g500); border-bottom:2px solid var(--g500); transform:rotate(-45deg); transition:transform .15s; margin-right:2px; }
+.gv-crit[open] summary::before { transform:rotate(45deg); }
+.gv-crit .grid { display:grid; gap:8px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); padding:0 14px 14px; }
+.gv-crit .it { background:#fff; border-radius:12px; padding:10px 12px; }
+.gv-crit .it b { display:block; font-size:13.5px; font-weight:700; margin-bottom:2px; }
+.gv-crit .it span { font-size:12.5px; color:var(--g600); line-height:1.55; }
+.gv-row { display:grid; grid-template-columns:34px minmax(0,1fr) minmax(9rem, 13rem); gap:14px; align-items:center; padding:14px 0; border-top:1px solid var(--g100); }
+.gv-row[hidden] { display:none; }
+.gv-no { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; color:#fff; background:var(--tc); }
+.gv-row .ttl { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.gv-row .ttl b { font-size:15.5px; font-weight:700; }
+.gv-mtag { font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:6px; background:var(--cb); color:var(--c); white-space:nowrap; }
+.gv-new { font-size:11.5px; font-weight:800; padding:2px 7px; border-radius:6px; background:var(--red-50); color:var(--red); }
+.gv-row .gv-tags { margin-top:7px; }
+.gv-bud { text-align:right; }
+.gv-bud .v { font-size:17px; font-weight:800; color:var(--g900); white-space:nowrap; }
+.gv-bud .v small { font-size:12px; font-weight:600; color:var(--g500); margin-left:3px; }
+.gv-bud .gv-gbar { margin-top:6px; }
+.gv-bud .gv-gbar.ov i { background:repeating-linear-gradient(135deg, var(--c) 0 6px, transparent 6px 10px); border:1px solid var(--c); }
+.gv-bud .ovn { display:block; font-size:11.5px; color:var(--g500); margin-top:3px; }
+.gv-tracks { display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.gv-tr { border-radius:16px; border:1px solid var(--g200); border-top:4px solid var(--tc); padding:16px 18px; display:flex; flex-direction:column; gap:8px; background:#fff; text-align:left; font-family:inherit; cursor:pointer; }
+.gv-tr:hover { border-color:var(--tc); }
+.gv-tr .hd { display:flex; align-items:center; gap:8px; }
+.gv-tr .hd b { font-size:15.5px; font-weight:700; flex:1; color:var(--g900); white-space:nowrap; }
+.gv-tr .term { font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:999px; background:var(--g100); color:var(--g700); }
+.gv-tr .tg { font-size:13px; font-weight:600; color:var(--tc); }
+.gv-tr p { margin:0; font-size:13.5px; line-height:1.6; color:var(--g700); }
+.gv-tr .go { font-size:12px; color:var(--g500); margin-top:auto; }
+.gv-op .ld { font-size:16px; font-weight:700; line-height:1.6; margin:6px 0 10px; color:var(--g900); }
+.gv-op p.b { font-size:14px; line-height:1.75; color:var(--g700); margin:0 0 8px; }
+.gv-flow { display:flex; align-items:stretch; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.gv-flow .st { flex:1 1 10rem; background:var(--g50); border-radius:14px; padding:12px 14px; display:flex; gap:10px; align-items:center; font-size:14px; font-weight:700; color:var(--g900); }
+.gv-flow .st i { font-style:normal; width:24px; height:24px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800; color:#fff; background:var(--tc); }
+.gv-flow .ar { display:flex; align-items:center; color:var(--g400); font-size:18px; font-weight:700; }
+@media (max-width: 760px) {
+  .gv-row { grid-template-columns:30px minmax(0,1fr); gap:10px; }
+  .gv-bud { grid-column:2; text-align:left; display:flex; align-items:center; gap:10px; }
+  .gv-bud .gv-gbar { flex:1; margin-top:0; }
+  .gv-bud .ovn { display:none; }
+  .gv-flow .ar { transform:rotate(90deg); width:100%; justify-content:center; }
+  .gv-min .amt { font-size:24px; }
+}
+</style>
+<script>
+window.renderGov = (G, root) => {
+  if (!root) return; root.textContent = '';
+  if (!G || !G.programs) { const f = document.createElement('p'); f.className = 'gv-note'; f.textContent = '정부 부처 자료를 불러오지 못했어요.'; root.appendChild(f); return; }
+  const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x !== undefined) e.textContent = x; return e; };
+  const tags = (arr) => { const w = el('div', 'gv-tags'); [].concat(arr || []).forEach(s => w.appendChild(el('span', 'gv-tag', s))); return w; };
+  const M = {}; (G.ministries || []).forEach(m => { M[m.key] = m; });
+  const mc = k => ({ c: `var(--gv-${k})`, cb: `var(--gv-${k}-50)` });
+  const tc = n => `var(--gv-t${n})`;
+  const wrap = el('div', 'gv'); root.appendChild(wrap);
+
+  const lead = el('div', 'gv-lead'); lead.appendChild(el('p', 't', '2027년 예산 흐름'));
+  lead.appendChild(el('p', 'l', G.trend)); lead.appendChild(tags(G.trendTags)); if (G.fit) lead.appendChild(el('p', 'f', G.fit)); wrap.appendChild(lead);
+
+  const mins = el('div', 'gv-mins'); const gmax = Math.max(...(G.ministries || []).map(m => m.growth || 0), 1);
+  (G.ministries || []).forEach(m => {
+    const c = el('div', 'gv-min'); const k = mc(m.key); c.style.setProperty('--c', k.c); c.style.setProperty('--cb', k.cb);
+    const hd = el('div', 'hd'); hd.appendChild(el('span', 'nm', m.name)); hd.appendChild(el('span', 'rkc', `정부 예산순위 ${m.rank}위`)); c.appendChild(hd);
+    c.appendChild(el('div', 'amt', m.budget));
+    const gr = el('div', 'gr'); gr.appendChild(document.createTextNode(m.growthNote ? `${m.growthNote}` : '전년 대비')); gr.appendChild(el('b', '', `+${m.growth}%`)); c.appendChild(gr);
+    const bar = el('div', 'gv-gbar'); const bi = el('i'); bi.style.width = Math.round(m.growth / gmax * 100) + '%'; bar.appendChild(bi); c.appendChild(bar);
+    c.appendChild(tags(m.focus)); mins.appendChild(c);
+  });
+  const minCard = el('div', 'gv-card'); minCard.appendChild(el('h3', '', '부처별 2027년 예산안')); minCard.appendChild(el('p', 'gv-desc', '웅진씽크빅 연계사업이 있는 3개 부처, 부처 발표 금액 기준'));
+  minCard.appendChild(mins); if (G.ministryNote) minCard.appendChild(el('p', 'gv-note', G.ministryNote)); wrap.appendChild(minCard);
+
+  const pc = el('div', 'gv-card'); pc.id = 'gv-programs'; pc.appendChild(el('h3', '', `2027년 중점 연계사업 ${G.programs.length}개`)); pc.appendChild(el('p', 'gv-desc', G.criteriaLead || ''));
+  const det = el('details', 'gv-crit'); det.appendChild(el('summary', '', `선정 기준 ${(G.criteria || []).length}가지 보기`)); const cg = el('div', 'grid');
+  (G.criteria || []).forEach((c, i) => { const it = el('div', 'it'); it.appendChild(el('b', '', `${i + 1}. ${c.name}`)); it.appendChild(el('span', '', c.desc)); cg.appendChild(it); }); det.appendChild(cg); pc.appendChild(det);
+  const chips = el('div', 'gv-chips'); chips.setAttribute('role', 'group'); chips.setAttribute('aria-label', '추진 전략으로 거르기'); pc.appendChild(chips);
+  const rows = []; const bmax = Math.max(...G.programs.map(p => p.budget || 0), 1);
+  G.programs.forEach(p => {
+    const m = M[p.ministry] || { name: p.ministry }; const k = mc(p.ministry);
+    const r = el('div', 'gv-row'); r.dataset.track = p.track; r.style.setProperty('--c', k.c); r.style.setProperty('--cb', k.cb); r.style.setProperty('--tc', tc(p.track));
+    r.appendChild(el('span', 'gv-no', String(p.rank)));
+    const mid = el('div'); const tt = el('div', 'ttl'); tt.appendChild(el('span', 'gv-mtag', m.short || m.name)); tt.appendChild(el('b', '', p.name)); if (p.isNew) tt.appendChild(el('span', 'gv-new', '신규'));
+    mid.appendChild(tt); mid.appendChild(tags(p.areas)); r.appendChild(mid);
+    const bd = el('div', 'gv-bud'); const v = el('div', 'v', p.budgetLabel); bd.appendChild(v);
+    const bar = el('div', 'gv-gbar' + (p.overlap ? ' ov' : '')); const bi = el('i'); bi.style.width = Math.max(4, Math.round(p.budget / bmax * 100)) + '%'; bar.appendChild(bi); bd.appendChild(bar);
+    if (p.overlap) bd.appendChild(el('span', 'ovn', '부트캠프와 중첩 가능'));
+    r.appendChild(bd); pc.appendChild(r); rows.push(r);
+  });
+  if (G.programNote) pc.appendChild(el('p', 'gv-note', G.programNote));
+  const setF = t => { chips.querySelectorAll('.gv-chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === String(t)))); rows.forEach(r => { r.hidden = !(t === 'all' || r.dataset.track === String(t)); }); };
+  const chip = (t, label, n) => { const b = el('button', 'gv-chip'); b.type = 'button'; b.dataset.t = String(t); b.appendChild(document.createTextNode(label)); b.appendChild(el('span', 'n', String(n))); b.addEventListener('click', () => setF(t)); chips.appendChild(b); };
+  chip('all', '전체', G.programs.length);
+  (G.tracks || []).forEach(t => chip(t.no, `${'①②③④'[t.no - 1] || t.no} ${t.name}`, G.programs.filter(p => p.track === t.no).length));
+  setF('all'); wrap.appendChild(pc);
+
+  const tcard = el('div', 'gv-card'); tcard.appendChild(el('h3', '', '사업 추진 방향')); tcard.appendChild(el('p', 'gv-desc', '카드를 누르면 위 목록에서 해당 사업만 보여요'));
+  const tg = el('div', 'gv-tracks');
+  (G.tracks || []).forEach(t => {
+    const b = el('button', 'gv-tr'); b.type = 'button'; b.style.setProperty('--tc', tc(t.no));
+    const hd = el('div', 'hd'); const no = el('span', 'gv-no', String(t.no)); no.style.setProperty('--tc', tc(t.no)); no.style.width = no.style.height = '26px'; no.style.fontSize = '13px';
+    hd.appendChild(no); hd.appendChild(el('b', '', t.name)); hd.appendChild(el('span', 'term', t.term)); b.appendChild(hd);
+    b.appendChild(el('span', 'tg', t.targets)); b.appendChild(el('p', '', t.action)); b.appendChild(el('span', 'go', '해당 사업 보기'));
+    b.addEventListener('click', () => { setF(t.no); pc.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    tg.appendChild(b);
+  });
+  tcard.appendChild(tg); wrap.appendChild(tcard);
+
+  const op = el('div', 'gv-card gv-op'); op.appendChild(el('h3', '', '종합 의견')); op.appendChild(el('p', 'ld', G.opinionLead));
+  [].concat(G.opinion || []).forEach(s => op.appendChild(el('p', 'b', s)));
+  const fl = el('div', 'gv-flow'); fl.setAttribute('aria-label', '핵심 추진 방향');
+  [].concat(G.flow || []).forEach((s, i) => { if (i) fl.appendChild(el('span', 'ar', '→')); const st = el('div', 'st'); const n = el('i', '', String(i + 1)); n.style.setProperty('--tc', tc(i + 1)); st.appendChild(n); st.appendChild(document.createTextNode(s)); fl.appendChild(st); });
+  op.appendChild(el('p', 'gv-note', '핵심 추진 방향')); op.lastChild.style.margin = '14px 0 0'; op.lastChild.style.fontWeight = '700'; op.lastChild.style.color = 'var(--g700)';
+  op.appendChild(fl); wrap.appendChild(op);
+
+  if (G.source) { const s = el('p', 'gv-note', '자료 출처: ' + G.source); s.style.margin = '0 4px'; wrap.appendChild(s); }
+};
+</script>
 <script>
 (() => {
   const STAGES = ['후보', '담당자 연결', '수요진단', '제안', '공동기획·견적 협의', '구매절차', '계약'];
@@ -313,9 +465,9 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611180851').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611181007').then(r => r.json());
   let PW = '';
-  const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); };
+  const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); try { window.renderGov(B.json.gov, document.getElementById('gov-root')); } catch (e) {} };
   document.getElementById('lockForm').addEventListener('submit', async e => {
     e.preventDefault(); const btn = document.getElementById('lockBtn'), err = document.getElementById('lockErr'); btn.disabled = true; err.textContent = '';
     try { await tryOpen(document.getElementById('lockPw').value); } catch { err.textContent = '비밀번호가 맞지 않아요.'; btn.disabled = false; }
@@ -594,7 +746,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
       if (props.length) {
         const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611180851').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611181007').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
         props.forEach(p => {
           const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
