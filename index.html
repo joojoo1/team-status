@@ -468,7 +468,7 @@ window.renderGov = (G, root) => {
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611231211').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611231656').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); try { window.renderGov(B.json.gov, document.getElementById('gov-root')); } catch (e) {} };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -750,10 +750,34 @@ window.renderGov = (G, root) => {
       const props = [].concat(B.json.proposals || []);
       if (props.length) {
         const pc = card('강원권 협력 제안서', '대학별 맞춤안과 강원권 공통안입니다. 바로 보기를 누르면 이 화면에서 열리고, PDF 받기를 누르면 파일로 받습니다.');
+        // 대학별 특성과 제안 과정 표 (11/23)
+        const tp = props.filter(p => p.traits && p.traits.length);
+        if (tp.length) {
+          const SHORT = { '강원대학교': '강원대', '한라대학교': '한라대', '춘천교육대학교': '춘천교대', '강원권 공통': '강원도 공통안' };
+          const box = el('div'); box.style.cssText = 'overflow-x:auto;margin:4px 0 12px';
+          const tb = el('table'); tb.style.cssText = 'width:100%;border-collapse:collapse;font-size:13px;line-height:1.6;background:#fff';
+          const cs = 'border:1px solid #e5e8eb;padding:8px 10px;vertical-align:middle';
+          const hr = el('tr');
+          [['구분', '14%'], ['대학 특성', '46%'], ['웅진씽크빅 제안 과정', '40%']].forEach(([t, w]) => { const c = el('th', '', t); c.style.cssText = cs + ';background:#eef3f8;text-align:center;width:' + w; hr.appendChild(c); });
+          tb.appendChild(hr);
+          const N = ['①', '②', '③', '④', '⑤'];
+          const lines = arr => { const d = el('div'); [].concat(arr || []).forEach((t, i) => d.appendChild(el('div', '', `${N[i] || '·'} ${t}`))); return d; };
+          tp.forEach(p => {
+            const tr = el('tr');
+            const a = el('td', '', SHORT[p.name] || p.name); a.style.cssText = cs + ';text-align:center;font-weight:700;white-space:nowrap'; tr.appendChild(a);
+            const b = el('td'); b.style.cssText = cs; b.appendChild(lines(p.traits)); tr.appendChild(b);
+            const c = el('td'); c.style.cssText = cs; c.appendChild(lines(p.offers)); tr.appendChild(c);
+            tb.appendChild(tr);
+          });
+          box.appendChild(tb); pc.appendChild(box);
+          const st = tp.map(p => p.status).filter(Boolean)[0];
+          if (st) { const s = el('p', 'mini', '진행 · ' + st); s.style.cssText = 'margin:0 0 12px;font-weight:600'; pc.appendChild(s); }
+        }
+
         const list = el('div'); list.style.cssText = 'display:flex;flex-direction:column;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
         const urls = {};
-        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611231211').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611231656').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
         const view = el('div'); view.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden';
         const vh = el('div'); vh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
         const vt = el('b', '', ''); const vx = el('button', 'btn', '닫기'); vx.type = 'button'; vx.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
