@@ -468,7 +468,7 @@ window.renderGov = (G, root) => {
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611230852').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611231123').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); try { window.renderGov(B.json.gov, document.getElementById('gov-root')); } catch (e) {} };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -746,18 +746,31 @@ window.renderGov = (G, root) => {
       const card = (t, sub) => { const c = el('div', 'card'); c.appendChild(el('h3', '', t)); if (sub) c.appendChild(el('p', 'desc', sub)); gw.appendChild(c); return c; };
       const table = (c, head, rows) => { const box = el('div', 'tbox'), tb = el('table'), hr = el('tr'); head.forEach(h => hr.appendChild(el('th', '', h))); const th = el('thead'); th.appendChild(hr); tb.appendChild(th); const bd = el('tbody'); rows.forEach(r => { const tr = el('tr'); r.forEach((v, i) => { const td = cell(tr, ''); if (v instanceof Node) td.appendChild(v); else td.textContent = v; if (i === 0 || (i === 1 && head[0] === '순위')) td.style.whiteSpace = 'nowrap'; }); bd.appendChild(tr); }); tb.appendChild(bd); box.appendChild(tb); c.appendChild(box); };
       const hero = el('div', 'strat'); hero.appendChild(el('p', 't', `${gk.title} · ${gk.checkedAt} 확인`)); hero.appendChild(el('p', 'lead', gk.summary)); hero.appendChild(el('p', 'mini', gk.focus)); [].concat(gk.route || []).forEach(r => hero.appendChild(el('p', 'mini', r))); hero.appendChild(el('p', 'mini', gk.note)); gw.appendChild(hero);
-      // 우선 3개교 맞춤 제안서 받기: PDF 묶음은 누를 때 한 번만 받아 같은 비밀번호로 푼다
+      // 강원권 협력 제안서: 바로 보기(화면 안 PDF) + PDF 받기. PDF 묶음은 누를 때 한 번만 받아 같은 비밀번호로 푼다 (11/23)
       const props = [].concat(B.json.proposals || []);
       if (props.length) {
-        const pc = card('우선 3개교 맞춤 제안서', '11/23 주 선영업 제안에 쓰는 제안서입니다. 누르면 PDF로 받습니다.'), row = el('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
+        const pc = card('강원권 협력 제안서', '대학별 맞춤안과 강원권 공통안입니다. 바로 보기를 누르면 이 화면에서 열리고, PDF 받기를 누르면 파일로 받습니다.');
+        const list = el('div'); list.style.cssText = 'display:flex;flex-direction:column;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
-        const getDoc = async f => { if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611230852').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type })); };
+        const urls = {};
+        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611231123').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+        const view = el('div'); view.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden';
+        const vh = el('div'); vh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
+        const vt = el('b', '', ''); const vx = el('button', 'btn', '닫기'); vx.type = 'button'; vx.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
+        vh.appendChild(vt); vh.appendChild(vx); view.appendChild(vh);
+        const fr = el('iframe'); fr.title = '제안서 보기'; fr.style.cssText = 'width:100%;height:80vh;min-height:560px;border:0;display:block;background:#fff'; view.appendChild(fr);
+        vx.addEventListener('click', () => { view.style.display = 'none'; fr.removeAttribute('src'); });
+        const dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>';
         props.forEach(p => {
-          const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>'; a.appendChild(document.createTextNode(`${p.name} ${p.title}`));
+          const r = el('div'); r.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;border:1px solid #e5e8eb;border-radius:12px';
+          const nm = el('div'); nm.style.cssText = 'flex:1;min-width:180px'; nm.appendChild(el('b', '', p.name)); nm.appendChild(el('div', 'mini', `${p.title} · ${p.at || ''}`)); r.appendChild(nm);
+          const v = el('button', 'btn', '바로 보기'); v.type = 'button'; v.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
+          v.addEventListener('click', async () => { v.disabled = true; msg.textContent = '제안서를 여는 중입니다.'; try { const u = await getDoc(p.file); vt.textContent = `${p.name} ${p.title}`; fr.src = u; view.style.display = 'block'; view.scrollIntoView({ behavior: 'smooth', block: 'start' }); msg.textContent = ''; } catch { docsP = null; msg.textContent = '제안서를 열지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } v.disabled = false; });
+          const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = dl; a.appendChild(document.createTextNode('PDF 받기'));
           a.addEventListener('click', async () => { a.disabled = true; msg.textContent = '제안서를 받는 중입니다.'; try { const u = await getDoc(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); msg.textContent = p.file + ' 받기 완료'; } catch { docsP = null; msg.textContent = '제안서를 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
-          row.appendChild(a);
+          r.appendChild(v); r.appendChild(a); list.appendChild(r);
         });
-        pc.appendChild(row); pc.appendChild(msg); pc.appendChild(el('p', 'mini', '작성 ' + props.map(p => p.at).filter(Boolean)[0] + ' · 제안서에 실적 금액과 비용 안내가 들어 있습니다'));
+        pc.appendChild(list); pc.appendChild(msg); pc.appendChild(view);
       }
       const inList = n => sales.some(a => a.name === n);
       table(card(`대학별 우선순위와 제안 (${[].concat(gk.list).length}곳)`, gk.legend + ' · 「영업 명단」 표시는 대학별 다음 할 일에 이미 있는 대학'), ['순위', '대학', '권역', '접근', '확인된 사업', '기존 역량 제안', '신규 공동사업'],
