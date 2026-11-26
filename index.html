@@ -222,6 +222,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
         <div class="stat"><span class="k">리스크 높음</span><span class="v"><span id="ps-high">-</span><small>개</small></span></div>
       </div>
       <div id="proj-groups" style="display:flex;flex-direction:column;gap:16px"></div>
+      <div class="card" id="proj-done" style="display:none"></div>
     </section>
 
     <section class="page" data-page="sales" hidden>
@@ -470,7 +471,7 @@ window.renderGov = (G, root) => {
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611261312').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611261330').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); try { window.renderGov(B.json.gov, document.getElementById('gov-root')); } catch (e) {} };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -721,6 +722,22 @@ window.renderGov = (G, root) => {
       pb.appendChild(tr);
     });
     if (!projects.length) pgs.appendChild(el('p', 'fail', '자료가 없습니다'));
+    // 2026 완료 사업(11/26): 진행 중 표 아래에 따로 보여 준다
+    const pd = document.getElementById('proj-done'), done = [].concat(B.json.done || []);
+    if (pd && done.length && !pd.dataset.done) {
+      pd.dataset.done = '1';
+      const hd = el('div'); hd.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px'; hd.appendChild(el('h3', '', '2026 완료 사업')); hd.appendChild(el('span', 'rk rk-l', done.length + '개')); pd.appendChild(hd);
+      pd.appendChild(el('p', 'desc', '올해 운영을 마친 사업입니다. 매출은 2026 총 매출에 들어 있습니다.'));
+      const box = el('div', 'tbox'), tb = el('table'); tb.innerHTML = '<thead><tr><th>사업</th><th>발주처</th><th>기간</th><th>2026 매출</th><th>영업이익률</th></tr></thead>'; const body = el('tbody');
+      done.forEach(r => {
+        const tr = el('tr'); const nc = cell(tr, ''); nc.appendChild(el('b', '', r.name)); if (r.note) nc.appendChild(el('div', 'mini', r.note));
+        cell(tr, r.client || '-'); const pc = cell(tr, r.period || '-'); pc.style.whiteSpace = 'nowrap';
+        const ac = cell(tr, Number(r.amount) > 0 ? eok(r.amount) : '-'); ac.style.whiteSpace = 'nowrap';
+        const mc = cell(tr, ''); if (r.margin !== null && r.margin !== undefined && r.margin !== '') { const mv = Number(r.margin); mc.appendChild(el('span', 'rk ' + (mv >= 35 ? 'rk-g' : mv >= 0 ? 'rk-m' : 'rk-h'), mv + '%')); } else mc.textContent = '-';
+        body.appendChild(tr);
+      });
+      tb.appendChild(body); box.appendChild(tb); pd.appendChild(box); pd.style.display = 'block';
+    }
     // 운영 현황 시트 링크 (주소는 잠긴 meta에 들어 있음)
     const pl = document.getElementById('proj-link'), mt = Array.isArray(meta) ? meta[0] : meta;
     if (mt && /^https:\/\/docs\.google\.com\//.test(mt.proj_link || '')) { const a = el('a', 'btn'); a.href = mt.proj_link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '운영 현황 보러가기 ↗'; pl.appendChild(a); }
@@ -772,7 +789,7 @@ window.renderGov = (G, root) => {
       const h = el('h3'); h.appendChild(tag); h.appendChild(document.createTextNode('강원도교육청 정책 비서관 미팅 · 본부장님 연결')); stop.appendChild(h);
       stop.appendChild(el('p', 'desc', '차주 화요일 미팅에서 쓸 한 장 요약입니다. 1안은 현황 직시, 2안은 도약 제안입니다.'));
       let oneP = null; const oneU = {};
-      const getOne = async f => { if (oneU[f]) return oneU[f]; if (!oneP) oneP = fetch('docs/proposals.lock.json?v=2611261312').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await oneP, x = d.files[f]; if (!x) throw new Error(); return (oneU[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+      const getOne = async f => { if (oneU[f]) return oneU[f]; if (!oneP) oneP = fetch('docs/proposals.lock.json?v=2611261330').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await oneP, x = d.files[f]; if (!x) throw new Error(); return (oneU[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
       const ov = el('div'); ov.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden;background:#fff';
       const oh = el('div'); oh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
       const ot = el('b', '', ''), ox = el('button', 'btn', '닫기'); ox.type = 'button'; ox.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; oh.appendChild(ot); oh.appendChild(ox); ov.appendChild(oh);
@@ -831,7 +848,7 @@ window.renderGov = (G, root) => {
         const list = el('div'); list.style.cssText = 'display:flex;flex-direction:column;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
         const urls = {};
-        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611261312').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611261330').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
         const view = el('div'); view.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden';
         const vh = el('div'); vh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
         const vt = el('b', '', ''); const vx = el('button', 'btn', '닫기'); vx.type = 'button'; vx.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
