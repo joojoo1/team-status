@@ -470,7 +470,7 @@ window.renderGov = (G, root) => {
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611261054').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611261127').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); try { window.renderGov(B.json.gov, document.getElementById('gov-root')); } catch (e) {} };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -614,13 +614,26 @@ window.renderGov = (G, root) => {
     const hs = Array.isArray(strategy) ? strategy[0] : strategy; if (hs) set('h-lead', hs.strategy);
     // 11/26 매출 보완 워크숍 준비자료(구글 시트). 주소는 잠긴 meta에만 넣는다
     const hw = document.getElementById('h-ws'), mw = Array.isArray(meta) ? meta[0] : meta;
-    if (hw && mw && /^https:\/\/docs\.google\.com\//.test(mw.workshop_link || '')) {
+    const wfile = [].concat(B.json.workshop_file || [])[0];
+    const wlink = mw && /^https:\/\/docs\.google\.com\//.test(mw.workshop_link || '') ? mw.workshop_link : '';
+    if (hw && (wlink || (wfile && wfile.b64))) {
       hw.textContent = '';
       const tx = el('div'); tx.style.cssText = 'flex:1;min-width:14rem';
       tx.appendChild(el('p', 'eyebrow', '워크숍 준비자료'));
-      const t2 = el('h3', '', mw.workshop_title || '2026. 11. 26. 매출 보완 워크숍'); t2.style.margin = '2px 0 0'; tx.appendChild(t2);
+      const t2 = el('h3', '', (mw && mw.workshop_title) || '2026. 11. 26. 매출 보완 워크숍'); t2.style.margin = '2px 0 0'; tx.appendChild(t2);
+      if (wfile && wfile.name) { const fn = el('p', 'mini', wfile.name); fn.style.margin = '2px 0 0'; tx.appendChild(fn); }
       hw.appendChild(tx);
-      const a = el('a', 'btn'); a.href = mw.workshop_link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '구글 시트로 열기 ↗'; hw.appendChild(a);
+      const bx = el('div'); bx.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+      if (wlink) { const a = el('a', 'btn'); a.href = wlink; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '구글 시트로 열기 ↗'; bx.appendChild(a); }
+      if (wfile && wfile.b64) {
+        // 회사 PC에서 구글 시트가 막힐 때: 잠긴 데이터 안의 엑셀을 바로 파일로 받는다
+        const x = el('button', 'btn'); x.type = 'button'; x.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
+        x.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>';
+        x.appendChild(document.createTextNode('엑셀 받기'));
+        x.addEventListener('click', () => { const u = URL.createObjectURL(new Blob([b64(wfile.b64)], { type: wfile.type })); const l = document.createElement('a'); l.href = u; l.download = wfile.name || '워크숍준비자료.xlsx'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); });
+        bx.appendChild(x);
+      }
+      hw.appendChild(bx);
       hw.style.display = 'flex';
     }
     const todo = [].concat(projects.map(p => ({ kind: '사업', who: p.name, what: p.next, due: p.due })), sales.filter(a => yes(a.campaignFocus) && a.stage !== '보류').map(a => ({ kind: '영업', who: a.name, what: a.next, due: a.due })))
@@ -761,7 +774,7 @@ window.renderGov = (G, root) => {
       const h = el('h3'); h.appendChild(tag); h.appendChild(document.createTextNode('강원도교육청 정책 비서관 미팅 · 본부장님 연결')); stop.appendChild(h);
       stop.appendChild(el('p', 'desc', '차주 화요일 미팅에서 쓸 한 장 요약입니다. 1안은 현황 직시, 2안은 도약 제안입니다.'));
       let oneP = null; const oneU = {};
-      const getOne = async f => { if (oneU[f]) return oneU[f]; if (!oneP) oneP = fetch('docs/proposals.lock.json?v=2611261054').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await oneP, x = d.files[f]; if (!x) throw new Error(); return (oneU[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+      const getOne = async f => { if (oneU[f]) return oneU[f]; if (!oneP) oneP = fetch('docs/proposals.lock.json?v=2611261127').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await oneP, x = d.files[f]; if (!x) throw new Error(); return (oneU[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
       const ov = el('div'); ov.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden;background:#fff';
       const oh = el('div'); oh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
       const ot = el('b', '', ''), ox = el('button', 'btn', '닫기'); ox.type = 'button'; ox.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; oh.appendChild(ot); oh.appendChild(ox); ov.appendChild(oh);
@@ -820,7 +833,7 @@ window.renderGov = (G, root) => {
         const list = el('div'); list.style.cssText = 'display:flex;flex-direction:column;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
         const urls = {};
-        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611261054').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611261127').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
         const view = el('div'); view.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden';
         const vh = el('div'); vh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
         const vt = el('b', '', ''); const vx = el('button', 'btn', '닫기'); vx.type = 'button'; vx.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
