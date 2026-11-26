@@ -226,6 +226,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
 
     <section class="page" data-page="sales" hidden>
       <div><p class="eyebrow">영업 현황</p><h1>27년 대학 영업, 지금 어디까지 왔나요</h1><p class="sub">강원권 대학 집중 영업(15개 대학·분교) 기준입니다. 접촉·회신·미팅은 실제 기록만 셉니다.</p></div>
+      <div class="card" id="s-top" style="display:none;border:2px solid #1F4E9A;background:#F5F8FD"></div>
       <div class="strat"><p class="t">전략 한 줄</p><p class="lead" id="s-lead">-</p><div class="tags" id="s-pts"></div></div>
       <div class="chips" role="tablist" id="tabs">
         <button class="chip" role="tab" aria-selected="true" data-tab="over">한눈에 보기</button>
@@ -469,7 +470,7 @@ window.renderGov = (G, root) => {
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611261049').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611261054').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); try { window.renderGov(B.json.gov, document.getElementById('gov-root')); } catch (e) {} };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -752,6 +753,35 @@ window.renderGov = (G, root) => {
     const ab = document.getElementById('t-acc');
     sales.slice().sort((a, b) => Number(a.rank) - Number(b.rank)).forEach(a => { const tr = el('tr'); cell(tr, String(a.rank), 'mute'); cell(tr, '').appendChild(el('b', '', a.name)); cell(tr, a.wave || '-', 'mute hide-narrow'); cell(tr, a.region, 'mute hide-narrow'); cell(tr, '').appendChild(el('span', 'rk ' + (a.stage === '보류' ? 'rk-h' : STAGES.indexOf(a.stage) >= 3 ? 'rk-g' : 'rk-l'), a.stage)); cell(tr, a.next || '-'); dueCell(tr, a.due); ab.appendChild(tr); });
 
+    // 영업 현황 맨 위 최우선 과제(11/26): 강원도교육청 정책 비서관 미팅용 한 장 요약 1안·2안 바로 보기·받기
+    const stop = document.getElementById('s-top'), one = [].concat(B.json.proposals || []).filter(p => /한 장 요약/.test(p.name || ''));
+    if (stop && one.length && !stop.dataset.done) {
+      stop.dataset.done = '1';
+      const tag = el('span', 'rk rk-h', '최우선'); tag.style.marginRight = '8px';
+      const h = el('h3'); h.appendChild(tag); h.appendChild(document.createTextNode('강원도교육청 정책 비서관 미팅 · 본부장님 연결')); stop.appendChild(h);
+      stop.appendChild(el('p', 'desc', '차주 화요일 미팅에서 쓸 한 장 요약입니다. 1안은 현황 직시, 2안은 도약 제안입니다.'));
+      let oneP = null; const oneU = {};
+      const getOne = async f => { if (oneU[f]) return oneU[f]; if (!oneP) oneP = fetch('docs/proposals.lock.json?v=2611261054').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await oneP, x = d.files[f]; if (!x) throw new Error(); return (oneU[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+      const ov = el('div'); ov.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden;background:#fff';
+      const oh = el('div'); oh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
+      const ot = el('b', '', ''), ox = el('button', 'btn', '닫기'); ox.type = 'button'; ox.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; oh.appendChild(ot); oh.appendChild(ox); ov.appendChild(oh);
+      const of = el('iframe'); of.title = '한 장 요약 보기'; of.style.cssText = 'width:100%;height:80vh;min-height:560px;border:0;display:block;background:#fff'; ov.appendChild(of);
+      ox.addEventListener('click', () => { ov.style.display = 'none'; of.removeAttribute('src'); });
+      const om = el('p', 'mini'); om.style.marginTop = '8px';
+      const ol = el('div'); ol.style.cssText = 'display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr))';
+      const dl1 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 11l5 5 5-5"/><path d="M12 4v12"/></svg>';
+      one.forEach(p => {
+        const r = el('div'); r.style.cssText = 'display:flex;flex-direction:column;gap:8px;padding:12px 14px;border:1px solid #c9d6ea;border-radius:12px;background:#fff';
+        r.appendChild(el('b', '', p.name.replace('강원 전체 한 장 요약 ', '한 장 요약 '))); r.appendChild(el('div', 'mini', p.title));
+        const bt = el('div'); bt.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+        const v = el('button', 'btn', '바로 보기'); v.type = 'button'; v.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
+        v.addEventListener('click', async () => { v.disabled = true; om.textContent = '여는 중입니다.'; try { const u = await getOne(p.file); ot.textContent = p.title; of.src = u; ov.style.display = 'block'; ov.scrollIntoView({ behavior: 'smooth', block: 'start' }); om.textContent = ''; } catch { oneP = null; om.textContent = '열지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } v.disabled = false; });
+        const a = el('button', 'btn'); a.type = 'button'; a.style.cssText = 'border:0;cursor:pointer;font-family:inherit'; a.innerHTML = dl1; a.appendChild(document.createTextNode('PDF 받기'));
+        a.addEventListener('click', async () => { a.disabled = true; om.textContent = '받는 중입니다.'; try { const u = await getOne(p.file), l = document.createElement('a'); l.href = u; l.download = p.file; document.body.appendChild(l); l.click(); l.remove(); om.textContent = p.file + ' 받기 완료'; } catch { oneP = null; om.textContent = '받지 못했습니다. 잠시 뒤 다시 눌러 주세요.'; } a.disabled = false; });
+        bt.appendChild(v); bt.appendChild(a); r.appendChild(bt); ol.appendChild(r);
+      });
+      stop.appendChild(ol); stop.appendChild(om); stop.appendChild(ov); stop.style.display = 'block';
+    }
     // 강원권 타깃 (영업 명단에 이미 있는 대학은 이름 옆에 표시)
     const gk = gangwon[0], gw = document.getElementById('gw');
     if (!gk) gw.appendChild(el('p', 'mini', '강원권 분석이 없습니다.'));
@@ -790,7 +820,7 @@ window.renderGov = (G, root) => {
         const list = el('div'); list.style.cssText = 'display:flex;flex-direction:column;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
         const urls = {};
-        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611261049').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611261054').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
         const view = el('div'); view.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden';
         const vh = el('div'); vh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
         const vt = el('b', '', ''); const vx = el('button', 'btn', '닫기'); vx.type = 'button'; vx.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
