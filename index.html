@@ -195,6 +195,7 @@ a.link:hover { color:var(--blue); text-decoration:underline; }
   <main>
     <section class="page" data-page="home">
       <div class="card" style="padding:26px 28px"><p class="eyebrow">공공사업팀</p><h1>업무 현황 한눈에 보기</h1><p class="sub">진행 사업, 대학 영업, 신규사업 공고와 기획을 정리했습니다.</p></div>
+      <div class="card" id="h-ws" style="display:none;align-items:center;gap:16px;flex-wrap:wrap;border:2px solid #1F4E9A;background:#EEF3FB"></div>
       <div class="stats">
         <button class="stat" data-jump="proj" style="text-align:left;cursor:pointer"><span class="k">진행 중인 사업</span><span class="v"><span id="h-proj">-</span><small>개</small></span><span class="f">프로젝트 <span id="h-np">-</span>개 · 사업 현황 보기</span></button>
         <button class="stat" data-jump="sales" style="text-align:left;cursor:pointer"><span class="k">영업 접촉 대학</span><span class="v"><span id="h-contact">-</span><small id="h-contact-t"></small></span><span class="f">영업 현황 보기</span></button>
@@ -468,7 +469,7 @@ window.renderGov = (G, root) => {
     document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.tab; });
   }));
 
-  const lockedP = fetch('data/locked.json?v=2611261036').then(r => r.json());
+  const lockedP = fetch('data/locked.json?v=2611261045').then(r => r.json());
   let PW = '';
   const tryOpen = async pw => { B = await unlock(pw, await lockedP); PW = pw; try { sessionStorage.setItem('tsPw', pw); } catch {} document.getElementById('lock').remove(); document.querySelector('.app').hidden = false; render(); spLoad(); try { window.renderGov(B.json.gov, document.getElementById('gov-root')); } catch (e) {} };
   document.getElementById('lockForm').addEventListener('submit', async e => {
@@ -610,6 +611,17 @@ window.renderGov = (G, root) => {
     const ck = kpi.find(r => r.metric === '접촉 대학'); if (ck) { set('h-contact', ck.value); set('h-contact-t', '/' + ck.target); }
     set('h-bids', bids.filter(b => { const d = days(b.deadline); return d !== null && d <= 14; }).length);
     const hs = Array.isArray(strategy) ? strategy[0] : strategy; if (hs) set('h-lead', hs.strategy);
+    // 11/26 매출 보완 워크숍 준비자료(구글 시트). 주소는 잠긴 meta에만 넣는다
+    const hw = document.getElementById('h-ws'), mw = Array.isArray(meta) ? meta[0] : meta;
+    if (hw && mw && /^https:\/\/docs\.google\.com\//.test(mw.workshop_link || '')) {
+      hw.textContent = '';
+      const tx = el('div'); tx.style.cssText = 'flex:1;min-width:14rem';
+      tx.appendChild(el('p', 'eyebrow', '워크숍 준비자료'));
+      const t2 = el('h3', '', mw.workshop_title || '2026. 11. 26. 매출 보완 워크숍'); t2.style.margin = '2px 0 0'; tx.appendChild(t2);
+      hw.appendChild(tx);
+      const a = el('a', 'btn'); a.href = mw.workshop_link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '구글 시트로 열기 ↗'; hw.appendChild(a);
+      hw.style.display = 'flex';
+    }
     const todo = [].concat(projects.map(p => ({ kind: '사업', who: p.name, what: p.next, due: p.due })), sales.filter(a => yes(a.campaignFocus) && a.stage !== '보류').map(a => ({ kind: '영업', who: a.name, what: a.next, due: a.due })))
       .map(t => Object.assign(t, { d: days(t.due) })).filter(t => t.d !== null && t.d <= 14).sort((a, b) => a.d - b.d);
     const ht = document.getElementById('h-todo');
@@ -777,7 +789,7 @@ window.renderGov = (G, root) => {
         const list = el('div'); list.style.cssText = 'display:flex;flex-direction:column;gap:8px';
         let docsP = null; const msg = el('p', 'mini'); msg.style.marginTop = '8px';
         const urls = {};
-        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611261036').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
+        const getDoc = async f => { if (urls[f]) return urls[f]; if (!docsP) docsP = fetch('docs/proposals.lock.json?v=2611261045').then(r => { if (!r.ok) throw new Error(); return r.json(); }).then(j => unlock(PW, j)); const d = await docsP, x = d.files[f]; if (!x) throw new Error(); return (urls[f] = URL.createObjectURL(new Blob([b64(x.b64)], { type: x.type || 'application/pdf' }))); };
         const view = el('div'); view.style.cssText = 'display:none;margin-top:12px;border:1px solid #e5e8eb;border-radius:12px;overflow:hidden';
         const vh = el('div'); vh.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e5e8eb';
         const vt = el('b', '', ''); const vx = el('button', 'btn', '닫기'); vx.type = 'button'; vx.style.cssText = 'border:0;cursor:pointer;font-family:inherit';
